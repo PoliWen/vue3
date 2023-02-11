@@ -12,7 +12,7 @@ export default{
 
 </script>
 <script setup lang="ts">
-import { onActivated,onDeactivated, onBeforeMount, onMounted, onUnmounted,onUpdated, onBeforeUpdate, ref,onBeforeUnmount} from 'vue'
+import { onActivated,onDeactivated, onBeforeMount, onMounted, onUnmounted,onUpdated, onBeforeUpdate, ref,onBeforeUnmount,watch} from 'vue'
 console.log('setup');
 const props = defineProps({
   title: String
@@ -43,7 +43,9 @@ onDeactivated(()=>{
   console.log('onDeactivated')
 })
 const count = ref(0)
-
+watch(count,(val)=>{
+  console.log('count的值发生了变化',val)
+})
 </script>
 
 <template>
