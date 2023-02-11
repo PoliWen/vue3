@@ -45,13 +45,16 @@ onDeactivated(()=>{
 const count = ref(0)
 watch(count,(val)=>{
   console.log('count的值发生了变化',val)
-})
+},{immediate:true})
+
+const num = ref(2)
 </script>
 
 <template>
   <h2>{{ title }}</h2>
   <h3>setup的执行时机，在beforeCreared之前</h3>
   <button @click="count=count+1">点击递增:{{count}}</button>
+  <button @click="num=num+1">点击递增:{{num}}</button>
 </template>
 
 <style scoped>

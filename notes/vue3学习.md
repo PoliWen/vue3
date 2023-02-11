@@ -2,29 +2,43 @@
 
 # vue3基础知识学习笔记
 
-### setup和生命周期钩子函数
+### setup函数
 
-setup函数在beforeCreated函数之前执行
+setup函数执行的时机，在beforeCreated之前。
+
+async setup() {  await } 的用法会导致组件无法渲染，需要结合suspense异步组件进行使用
+
+```typescript
+<script setup lang="ts">
+import { watch, ref} from 'vue'
+function delay(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      const res = {
+          status:1,
+          data:{
+            msg:'成功'
+          }
+      }
+      resolve(res)
+    },2000)
+  })
+}
+const res = await delay()
+console.log('setUp里面执行await函数',res)
+
+const props = defineProps({
+  title: String
+})
+</script>
+// 以上代码会报错,runtime-core.esm-bundler.js:40 [Vue warn]: Component <Anonymous>: setup function returned a promise, but no <Suspense> boundary was found in the parent component tree. A component with async setup() must be nested in a <Suspense> in order to be rendered. 
 
 ```
-<script lang="ts">
-export default{
-  name:'setup',
-  props:{
-    title:String
-  },
-  beforeCreate() {
-    console.log('beforeCreated',this.title)
-  },
-  created(){
-    console.log('created')
-  },
-  setup(){
-    console.log('setup')
-  }
-}
 
-</script>
+正确的用法
+
+```
+
 ```
 
 
