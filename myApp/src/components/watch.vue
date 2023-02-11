@@ -17,13 +17,19 @@ const unwatch = watch(count,(newVal,oldVal)=>{
 
 const person = reactive({
     name: '张三',
-    age: 30
+    age: 30,
+    son:{
+        name: '张子',
+        age: 2
+    }
 })
 
 watch(person,(newVal,oldVal)=>{
-    console.log(newVal.name);
-    console.log(oldVal.name);
+    console.log(newVal.son.age);
+    console.log(oldVal.son.age);
 })
+person.son.age = 10
+
 watch(()=> person.name,(newVal,oldVal)=>{
     console.log(newVal,oldVal)
 })
@@ -57,10 +63,17 @@ watch([count,()=> person.name],([newCount,newName])=>{
 
 watchEffect(()=>{
     console.log('count发生了变化就执行watchEffect',unref(count))
-    console.log('person.name的值也发生了变化',person.name)
+    setTimeout(()=>{
+        person.name = unref(count)+ '3'
+        console.log('person.name的值也发生了变化')
+    },3000)
 })
 
-
+const x = ref(1)
+watch(()=> x.value + '123',(val)=>{
+    console.log('value的值可以修改',val)
+})
+setTimeout(()=>x.value++,1000)
 
 </script>
 

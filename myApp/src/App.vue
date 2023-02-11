@@ -2,11 +2,13 @@
 import { ref } from 'vue'
 // import setUpPlay from './components/setUpPlay.vue'
 // import watch from './components/watch.vue'
-import unwatch from './components/unWatch.vue'
-import effectScope from './components/effectScope.vue'
+// import unwatch from './components/unWatch.vue'
+// import effectScope from './components/effectScope.vue'
+import computedCom from './components/computed.vue'
+import useMouse from './components/useMouse.vue'
 </script>
 <template>
-    <effectScope title="effectScope的使用"/>
+    <useMouse/>
 </template>
 
 <style scoped>
