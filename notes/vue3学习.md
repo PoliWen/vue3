@@ -55,21 +55,90 @@ import setUp from './components/setUp.vue'
 
 ref，reactive，unRef，toRef，toRefs，toRaw，markRaw，shallowRef，shallowReactive
 
-#### 手写简易版reactive
+### shallowReactive的基础实现
 
+```typescript
+const reactiveHandler ={
+    get(target,prop){
+        console.log('拦截get()',prop)
+        return Reflect.get(target,prop)
+    },
+    set(target,prop,val){
+        console.log('劫持set()',prop,val)
+        return Reflect.set(target,prop,val)
+    },
+    deleteProperty(target,prop){
+        console.log('劫持delete',prop)
+        return Reflect.deleteProperty(target,prop)
+    }
+}
+function shallowReactive(target:Object){
+    if(target && typeof target==='object'){
+        return new Proxy(target,reactiveHandler)
+    }
+    return target
+}
+
+const person = shallowReactive({
+    name: '张三',
+    age: 30,
+    son: {
+        name:'小张',
+        age: 3
+    }
+})
+person.name = '王五'
+console.log(person.name)
+delete person.name
 ```
 
+以上代码是浅响应，可以劫持对象的第一级属性，嵌套属性无法劫持的。需要深度劫持，要进行递归遍历
+
+#### reactive的基础实现，
+
+在shallowReactive的基础上进行递归拦截
+
+```typescript
+function reactive(target:Object){
+    if(target && typeof target === 'object'){
+       Object.entries(target).forEach(([key,value])=>{
+            if(typeof value === 'object'){
+                target[key] = reactive(value)  // 递归监听子元素
+            }
+       })
+        return new Proxy(target,reactiveHandler)
+    }
+    return target
+}
 ```
 
-#### 手写简易版ref
+#### ref的基础实现
 
+```typescript
+function ref(target:string | number | boolean){
+    return {
+        _value:target,
+        get value(){
+            console.log('劫持get')
+            return this._value
+        },
+        set value(val){
+            console.log('劫持set')
+            this._value = val
+        }
+    }
+}
+const x = ref(0)
+console.log(x.value)
+x.value = 2
+console.log(x.value)
 ```
 
-```
+js中get和set可以指定属性名，当访问设置这个属性名的时候就会触发get和set方法
 
 ### toRef与toRefs
 
-使用解构赋值，会使得响应式对象失去响应式，可借助**toRefs**或者**toRef**
+使用解构赋值，会使得响应式对象失去响应式，可借助**toRefs**或者**toRef**包裹之后在进行解构
 
 ```javascript
 import { toRefs,ref } from 'vue'
@@ -123,9 +192,9 @@ console.log(isReactive(reactive(foo))) // false
 
 **shallowReactive** 非递归包装成proxy对象，仅仅包装第一级property
 
+#### readOnly和shallowReadonly
 
 
-**shallowReadonly** 非递归包装成readonly只读，仅仅包装第一级property
 
 ### h()**函数的使用
 

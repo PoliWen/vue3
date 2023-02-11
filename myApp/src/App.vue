@@ -6,9 +6,10 @@ import { ref } from 'vue'
 // import effectScope from './components/effectScope.vue'
 import computedCom from './components/computed.vue'
 import useMouse from './components/useMouse.vue'
+import reactive from './components/reactive.vue'
 </script>
 <template>
-    <useMouse/>
+    <reactive/>
 </template>
 
 <style scoped>
