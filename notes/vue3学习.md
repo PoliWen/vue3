@@ -1,6 +1,33 @@
 
 
-### vue3基础知识学习笔记
+# vue3基础知识学习笔记
+
+### setup和生命周期钩子函数
+
+setup函数在beforeCreated函数之前执行
+
+```
+<script lang="ts">
+export default{
+  name:'setup',
+  props:{
+    title:String
+  },
+  beforeCreate() {
+    console.log('beforeCreated',this.title)
+  },
+  created(){
+    console.log('created')
+  },
+  setup(){
+    console.log('setup')
+  }
+}
+
+</script>
+```
+
+
 
 **h()**函数的使用
 
@@ -67,8 +94,6 @@ watch与watchEffect
 ```
 
 手写简易版ref
-
-
 
 
 
