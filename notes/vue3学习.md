@@ -169,10 +169,39 @@ setup(props){
 val = isRef(val) ? val.value : val
 ```
 
-#### **customRef** 自定义一个响应式
+#### **customRef** 的使用
 
-```
+```typescript
 
+<script setup lang="ts">
+import { customRef } from 'vue'
+function useDebouncedRef<T>(value:T, delay = 200){
+    let timer:number
+    return customRef((track,trigger)=>{
+        return {
+            get(){
+                track()
+                return value
+            },
+            set(newVal: T){
+                clearTimeout(timer)
+                timer = setTimeout(() => {
+                    value = newVal
+                    trigger()
+                }, delay);
+            }
+        }
+    })
+}
+const name = useDebouncedRef('刘德华')
+console.log(name.value)
+</script>
+
+<template>
+    <h1>用customRef定义一个防抖函数</h1>
+    <input type="text" v-model="name" placeholder="输入名称">
+    {{ name }}
+</template>
 ```
 
 **toRaw**从代理对象reactive中获取原始对象
@@ -189,12 +218,6 @@ console.log(toRaw(reactiveFoo) === foo) // true
 const foo = markRaw({})
 console.log(isReactive(reactive(foo))) // false
 ```
-
-**shallowReactive** 非递归包装成proxy对象，仅仅包装第一级property
-
-#### readOnly和shallowReadonly
-
-
 
 ### h()**函数的使用
 
@@ -253,9 +276,9 @@ setTimeout(()=>{fullName.value = '王 麻子'},1000)
 
 ### watch与watchEffect
 
-> watch用来监听数据的变化，可以直接监听ref值，监听reactive和computed需要写成函数的形式，不加immediate第一次不会执行，支持数组的形式，
->
-> watchEffect第一次也会进行监听，不需要指定监听的对象，只要watcheffect函数体里面所有依赖的响应式数据发生变化，就会触发执行。watchEffect有时候可以减少代码量，但可能导致监听关系不是很明确。
+watch用来监听数据的变化，可以直接监听ref值，监听reactive和computed需要写成函数的形式，不加immediate第一次不会执行，支持数组的形式，
+
+watchEffect第一次也会进行监听，不需要指定监听的对象，只要watcheffect函数体里面所有依赖的响应式数据发生变化，就会触发执行。watchEffect有时候可以减少代码量，但可能导致监听关系不是很明确。
 
 ```typescript
 // 监听单个ref
@@ -398,15 +421,112 @@ setTimeout(() => x.value++,1000)
 watch(source,callback,{flush:post})
 ```
 
-### **关于style选择器**
+### 自定义指令
+
+自定义指令的使用 
+
+````typescript
+const vFocus = {
+	mounted(el,binding){
+		el.focus()
+	}
+}
+
+const vColor = {
+    mounted:(el:HTMLElement, binding)=>{
+        el.style.color = binding.value
+    }
+}
+````
+
+自定义指令传递的参数的含义
+
+- el: 指令绑定的元素
+- binding: 返回一个对象，包含一下属性
+  - value: v-my-directive = ' 1 + 1' , value值2
+  - arg: v-my-directive:foo  值是foo
+  - modifiers：v-my-directive.foo.bar  修饰符对象是{ foo:  true，bar:  true }
+
+### 使用自定义指令实现一个v-click-outside
+
+```typescript
+
+<script setup lang="ts">
+const vClickOutside = {
+    mounted(el, binding){
+        const clickHandler = (ev)=>{
+            if(el.contains(ev.target)){
+                return
+            }
+            if(binding.value && typeof binding.value === 'function'){
+                binding.value()
+            }
+        }
+        el._clickOutside = clickHandler
+        document.addEventListener('click',el._clickOutside)
+    },
+    unmounted(el) {
+        document.removeEventListener('click', el._clickOutside);
+        delete el._clickOutside;
+    },
+}
+
+function clickoutside(){
+    console.log('点击了外面')
+}
+</script>
+
+<template>
+    <h1>自定义指令的使用</h1>
+    <input type="text" v-model="name" placeholder="输入名称" v-focus v-click-outside="clickoutside">
+</template>
 
 ```
-:deep(div)   // 深度选择器，可以控制子选择器的样式
 
-:slotted(div) // 插槽选择器，可以控制插槽的元素的样式
+### v-model原理
 
-:global(.red) // 全局选择器，可以将此样式应用到全局
+```typescript
+<input :value="text" @input="event => text = event.target.value">
 ```
+
+#### 实现一个 v-model.capitalize
+
+```typescript
+// 自定义一个myInput.vue
+<script setup lang="ts">
+import { ref, defineProps, defineEmits } from 'vue'
+const props = defineProps({
+    modelValue: String,
+    modelModifiers:{default:()=>({})}
+})
+const emit = defineEmits(['update:value'])
+function updateModelValue(e){
+    let value = e.target.value
+    if(props.modelModifiers.capitalize){
+        value = value.charAt(0).toUpperCase() +  value.slice(1)
+    }
+    e.target.value = value
+    emit('update:value',value)
+}
+</script>
+
+<template>
+   <input type="text" :value="modelValue" @input="updateModelValue">
+</template>
+
+
+// 在app.vue中使用
+<script setup lang="ts">
+import { ref } from 'vue'
+import myInput from './components/myInput.vue'
+const count = ref('')
+</script>
+<template>
+    <myInput v-model.capitalize="count"/>
+</template>
+```
+
+同理可以实现v-model.trim  v-model.number  v-model.lazy
 
 ### 实现一个useMouse钩子函数
 
@@ -435,4 +555,46 @@ export function useMouse(){
 }
 ```
 
+### 关于style选择器**
 
+```
+:deep(div)   // 深度选择器，可以控制子选择器的样式
+
+:slotted(div) // 插槽选择器，可以控制插槽的元素的样式
+
+:global(.red) // 全局选择器，可以将此样式应用到全局
+```
+
+### expose
+
+父组件想访问到子组件的方法与属性，需要在子组件中使用expose进行对外暴露
+
+### 计算属性vs方法
+
+计算属性跟方法的使用，计算属性有缓存能力，只有当它依赖的的响应式数据发生更改的时才会重新计算，而方法总是在重新渲染时，再次执行计算
+
+### v-if vs v-show
+
+v-if 有更高的切换开销，而 v-show 有更高的初始渲染开销。因此，如果需要频繁切换，则使用 v-show 较好；如果在运行时绑定条件很少改变，则 v-if 会更合适
+
+### v-if 与v-for不能同时使用
+
+v-if与v-for不建议同时使用，因为v-if会先执行，可以使用template标签包裹一层
+
+```
+<template v-for="todo in todos">
+    <li v-if="!todo.isComplete">
+      {{ todo.name }}
+    </li>
+</template>
+```
+
+v-for in 可以用v-for of来代替
+
+### @click.prevent.self  vs  @click.self.prevent
+
+@click.prevent.self，会阻止元素以及子元素的默认行为
+
+@click.self.prevent，会阻止元素本身的点击的事件的默认行为
+
+@click.once事件被调用一次即被移除掉

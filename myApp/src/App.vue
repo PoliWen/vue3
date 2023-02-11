@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import setUpPlay from './components/setUpPlay.vue'
-// import watch from './components/watch.vue'
-// import unwatch from './components/unWatch.vue'
-// import effectScope from './components/effectScope.vue'
+import setUpPlay from './components/setUpPlay.vue'
+import watch from './components/watch.vue'
+import unwatch from './components/unWatch.vue'
+import effectScope from './components/effectScope.vue'
 import computedCom from './components/computed.vue'
 import useMouse from './components/useMouse.vue'
 import reactive from './components/reactive.vue'
+import customRef from './components/customRef.vue'
+import directive from './components/directive.vue'
+import myInput from './components/myInput.vue'
+const count = ref('')
+const age = ref(0)
 </script>
 <template>
-    <reactive/>
+    <myInput v-model.capitalize="count"/>
+    <input type="text" v-model.number="age">
 </template>
 
 <style scoped>
