@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import setUpPlay from './components/setUpPlay.vue'
+// import setUpPlay from './components/setUpPlay.vue'
+// import watch from './components/watch.vue'
+import unwatch from './components/unWatch.vue'
+import effectScope from './components/effectScope.vue'
 </script>
 <template>
-    <setUpPlay/>
+    <effectScope title="effectScope的使用"/>
 </template>
 
 <style scoped>
