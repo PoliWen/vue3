@@ -4,11 +4,17 @@ import {
     useRouter
 } from 'vue-router'
 const toRefsCom = () => import('../components/toRefs.vue')
+const setupCom = () => import('../components/setUp.vue')
 const routes = [
     {
         name: 'toRefs',
         path: '/toRefs',
         component: toRefsCom,
+    },
+    {
+        name: 'setUp',
+        path: '/setup',
+        component: setupCom,
     },
 ]
 
