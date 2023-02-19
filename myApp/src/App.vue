@@ -11,13 +11,24 @@ import customRef from './components/customRef.vue'
 import directive from './components/directive.vue'
 import myInput from './components/myInput.vue'
 import veelidate from './components/veelidate.vue'
+import propsValidate from './components/propsValidate.vue'
 const count = ref('')
 const age = ref(0)
+const father = ref({
+  name: '大大',
+  age:30,
+  children:{
+    name:'小小',
+    age: 3
+  }
+})
 </script>
 <template>
     <myInput v-model.capitalize="count"/>
     <input type="text" v-model.number="age">
     <veelidate/>
+    <propsValidate button-type="success" :father="father"/>
+    {{ father.name }}
 </template>
 
 <style scoped>

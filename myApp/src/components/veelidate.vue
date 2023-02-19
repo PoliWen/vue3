@@ -24,10 +24,8 @@ const { errorMessage, value: address, validate } = useField('fieldName', validat
 watch(formData,(val)=>{
     address.value = val.address
 })
-console.log(validate)
 function xxx(){
     validate()
     console.log(unref(address))
-    
 }
 </script>
