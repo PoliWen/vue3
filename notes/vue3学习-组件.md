@@ -105,15 +105,9 @@ const emit = defineEmits<{
 }>()
 ```
 
-如果不想attributes被继承
+### v-model
 
-```typescript
-<script>
-export default {
-  inheritAttrs: false
-}
-</script>
-```
+
 
 ### provide与inject
 
@@ -154,11 +148,41 @@ provide('read-only-count',readonly(count))
 
 inject可以提供一个默认值，当父组件没有提供key值的时候会避免报错
 
-```
+```typescript
 const message = inject('message','hello')
 ```
 
+### 插槽
 
+具名插槽
+
+```typescript
+<div class="modal">
+    <slot name="header"></slot>
+	<slot name='body'></slot>
+	<slot name="footer"></slot>
+</div>
+
+// 使用
+<myComponent>
+	<template #header>
+    	<h3>弹窗的标题</h3>    
+    </template>        
+</myComponent>
+```
+
+作用域插槽
+
+```typescript
+<div>
+    <slot :message="'hello'" :count="count"></slot>
+</div>
+
+<myComponent v-slot="{message, count}">
+    {{ message.split('').reverse() }}
+    {{ count }}
+</myComponent>
+```
 
 ### useSlots的使用
 
@@ -170,7 +194,27 @@ const slots = useSlots()
 console.log(slots.default())
 ```
 
+### useAttrs的使用
 
+```typescript
+<div foo="true"></div>
+
+import { useAttrs } from 'vue'
+const attrs = useAttrs()
+console.log(attrs.foo) // true
+```
+
+如果不想attributes被孙子组件继承，可以设置inheritAttrs: false
+
+```typescript
+<script>
+export default {
+  inheritAttrs: false
+}
+</script>
+```
+
+子组件中不止一个根节点，需要使用v-bind="$attrs"指定将属性绑定到哪一个子元素上。
 
 ### 问题
 
@@ -193,9 +237,14 @@ const props = defineProps({
 
 - 让provide属性不能被修改？
 
+- 作用域插槽
+
+  ```typescript
+  <div>
+      <slot :message="'hello'" :count="count"></slot>
+  </div>
   
-
-
-
-
-
+  <myComponent v-slot="{message,count}">
+      <button @click="count=count+1">{{message}}{{count}}</button>
+  </myComponent>
+  ```

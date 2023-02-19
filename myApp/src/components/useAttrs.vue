@@ -5,8 +5,9 @@ import subAttrs from './subAttrs.vue'
 </script>
 
 <template>
-  <subAttrs>
-    <p>aaaaa</p>
+  <subAttrs v-slot="{message,count}">
+    {{ message.split('').reverse() }}
+    <button @click="count=count+1">{{count}}</button>
   </subAttrs>
 </template>
 
