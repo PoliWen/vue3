@@ -15,13 +15,17 @@ const props = defineProps({
         require: true
     }
 })
+const emit = defineEmits(['click'])
 function changeSonName(){
     props.father.name = '大大大'
+    // emit('click','clickEvent')
 }
 </script>
 
 <template>
+  <div :style="{background:'red'}">
    status:{{ buttonType }}
-   <button @click="changeSonName">{{props.father.name}}</button>
+   <button @click.stop="changeSonName">{{props.father.name}}</button>
+  </div>
 </template>
 

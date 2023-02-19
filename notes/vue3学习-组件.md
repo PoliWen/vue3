@@ -73,7 +73,90 @@ const props = defineProps({
 <myComponent welcome-message="hello"/>
 ```
 
+props的type还可以是一个类，或者构造函数，vue会通过instanceof来检查类型是否匹配
 
+### emit父子组件数据传递
+
+事件的命名在子组件使用camelCase，在父组件汇总使用kebab-case，跟props的命名规则一样
+
+emit事件支持对象语法，可以对触发事件的参数进行校验
+
+```typescript
+const emit = defineEmits({
+	submit({email,password}){
+        if(email && password){
+        	return true
+        }else{
+            return false
+        }
+    }
+})
+function submit(email,password){
+    emit('submit',{email,password})  // 校验通过了才会在父组件中接收到
+}
+```
+
+使用typeScript对事件的函数进行声明
+
+```typescript
+const emit = defineEmits<{
+	(e:'submit', email: string):void
+    (e:'update', id: number): void
+}>()
+```
+
+如果不想attributes被继承
+
+```typescript
+<script>
+export default {
+  inheritAttrs: false
+}
+</script>
+```
+
+### provide与inject
+
+provide会将数据逐级传递到每一个子组件中，在子组件中可以使用inject接受到父组件传递过来的值
+
+```javascript 
+// 父组件
+const { provide } from 'vue'
+const count = ref(0)
+provide('count',{
+    count,
+    increaseCount(){
+        count.value++
+    }
+})
+
+const message = ref('hello')
+provide('message',message)
+
+
+//子组件接收
+const { inject } from 'vue'
+const {count,increasecount} = inject('count')
+const message = inject('message')
+```
+
+为了避免命名重复或者冲突，最好可以使用**Symbol**作为provide的命名，这些命名可以抽离到一个单独的文件中。
+
+在子组件可以直接修改父组件注入的数据，但是不建议这么做，会导致数据的修改混乱无法追踪，建议所有的修改都在供给方组件中进行修改，可以提供一个方法注入到子组件中给子组件进行调用。
+
+如果要让provide注入的数据不能被修改，可以使用readonly进行包裹
+
+```typescript
+import { readonly,provide } from 'vue'
+const count = ref(0)
+provide('read-only-count',readonly(count))
+```
+
+inject可以提供一个默认值，当父组件没有提供key值的时候会避免报错
+
+```
+const message = inject('message','hello')
+```
 
 
 
@@ -103,7 +186,14 @@ const props = defineProps({
 
 - 当props是一个对象或者数组的时候在子组件中可以被直接修改?    会报错吗?
 
+- .once修饰符的作用
+- vue父子组件的通信方式有哪几种?
 
+- @click跟@click.native的区别?
+
+- 让provide属性不能被修改？
+
+  
 
 
 

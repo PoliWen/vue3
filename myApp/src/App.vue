@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import setUpPlay from './components/setUpPlay.vue'
 import watch from './components/watch.vue'
 import unwatch from './components/unWatch.vue'
@@ -12,7 +12,9 @@ import directive from './components/directive.vue'
 import myInput from './components/myInput.vue'
 import veelidate from './components/veelidate.vue'
 import propsValidate from './components/propsValidate.vue'
-const count = ref('')
+import providePlay from './components/provide.vue'
+import attrs from './components/useAttrs.vue'
+const count = ref(0)
 const age = ref(0)
 const father = ref({
   name: '大大',
@@ -22,13 +24,32 @@ const father = ref({
     age: 3
   }
 })
+function clickFn(n:string){
+  alert(`nativeClick${n}`)
+}
+function clickSub(n:string){
+  alert(n)
+}
+
+provide('count',{
+  count,
+  increaseCount(){
+    count.value++
+  }
+})
+function onClick(){
+  alert(123)
+}
 </script>
 <template>
     <myInput v-model.capitalize="count"/>
     <input type="text" v-model.number="age">
     <veelidate/>
-    <propsValidate button-type="success" :father="father"/>
+    <propsValidate button-type="success" :father="father" @click.native="clickFn" @click="clickSub"/>
     {{ father.name }}
+
+    <providePlay/>
+    <attrs class="attrs" @click="onClick" data-stats="gggg"/>
 </template>
 
 <style scoped>
