@@ -307,3 +307,7 @@ const props = defineProps({
       <button @click="count=count+1">{{message}}{{count}}</button>
   </myComponent>
   ```
+
+- useVmodel原理
+- 实现一个v-model.capitalize的思路
+- JSON.parse(JSON.stringify(value)) 是深拷贝还是浅拷贝
