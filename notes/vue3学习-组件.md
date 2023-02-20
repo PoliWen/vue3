@@ -107,7 +107,66 @@ const emit = defineEmits<{
 
 ### v-model
 
+#### v-model的原理
 
+```typescript
+<input
+  :value="searchText"
+  @input="searchText = $event.target.value"
+/>
+```
+
+computed实现v-model
+
+```typescript
+<!-- myInput.vue -->
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps(['modelValue'])
+const emit = defineEmits(['update:modelValue'])
+
+const value = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emit('update:modelValue', value)
+  }
+})
+</script>
+
+<template>
+  <input v-model="value" />
+</template>
+```
+
+#### 实现一个v-model.capitalize
+
+```typescript
+<script setup>
+const props = defineProps({
+  modelValue: String,
+  modelModifiers: { default: () => ({}) }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+function emitValue(e) {
+  let value = e.target.value
+  if (props.modelModifiers.capitalize) {
+    value = value.charAt(0).toUpperCase() + value.slice(1)
+  }
+  emit('update:modelValue', value)
+}
+</script>
+
+<template>
+  <input type="text" :value="modelValue" @input="emitValue" />
+</template>
+```
+
+v-model.lazy，v-model.number，v-model.trim同理可实现
 
 ### provide与inject
 
