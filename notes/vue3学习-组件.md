@@ -107,6 +107,45 @@ const emit = defineEmits<{
 
 ### v-model
 
+v-model的原理
+
+```typescript
+<input :value="searchTxt" @input="searchTxt = $event.target.value"></input>
+
+```
+
+使用computed实现
+
+```typescript
+// myInput
+<script setup lang="ts">
+import { computed } from 'vue'
+const props = defineProps(['modelValue'])
+const emit = defineEmits(['update:modelValue'])
+const value = computed({
+    get(value){
+        return props.modelValue
+    },
+    set(newVal){
+        emit('update:modelValue',newVal)
+    }
+})
+</script>
+
+<template>
+   <input type="text" v-model="value">
+</template>
+
+
+```
+
+v-model可以指定多个参数
+
+```
+​```
+
+```
+
 
 
 ### provide与inject
@@ -214,11 +253,11 @@ export default {
 </script>
 ```
 
-子组件中不止一个根节点，需要使用v-bind="$attrs"指定将属性绑定到哪一个子元素上。
+子组件中不止一个根节点，需要使用v-bind="$attrs"指定将属性绑定到某一个子元素上。
 
 ### 问题
 
-- props的属性定一个了一个default默认值，当显示的传入一个undefined的时候，显示的是什么值
+- props的属性定一个了一个default默认值，当显示的传入一个undefined的时候，显示的是什么值?
 - modelValue，modelModifiers代表什么？
 
 ```typescript
@@ -248,3 +287,5 @@ const props = defineProps({
       <button @click="count=count+1">{{message}}{{count}}</button>
   </myComponent>
   ```
+
+- useVModel的原理
