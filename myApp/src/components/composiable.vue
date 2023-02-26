@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
-import { useState } from '../useHooks/index'
-const { x, increase } = useState()()
+import { useX } from '../useHooks/index'
+const { x, increase } = useX()
 
 </script>
 
