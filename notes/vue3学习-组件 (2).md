@@ -83,6 +83,10 @@ export function createSharedComposable(composable){
 
 问题，在组件上绑定指令，如果组件内部有多个根节点，可以通过v-bind="$attrs"来指定传递的元素吗?
 
+如何设计一个自定义指令，有哪些场景下可以使用自定义指令，你写过那些自定义指令
+
+
+
 
 
 ### app.config.globalProperties
@@ -101,9 +105,48 @@ enter-from，enter-active  enter-to
 
 leave-from，leave-active，leave-to
 
-结合animat.css和Animate.js以及GSAP动画库，可以实现几乎所有的动画效果了
+结合animate.css和Animate.js以及GSAP动画库，可以实现几乎所有的动画效果了
 
 为了提升网页的动画的性能，一般建议使用，transform，translate来实现动画，尽量避免触发页面的回流与重绘
+
+在用js钩子函数控制transition动画的时候为了避免css影响它，需要增加一个:css="false"属性
+
+```javascript
+ <Transition
+    @before-enter="onBeforeEnter"
+    @enter="onEnter"
+    @leave="onLeave"
+    :css="false"
+  >
+    <div class="gsap-box" v-if="show"></div>
+  </Transition>
+```
+
+监听动画结束的原生就是事件是
+
+```javascript
+el.addEventListener('transitionend',()=>{})
+```
+
+### keep-alive
+
+keepalive 的max属性限制缓存的最大数量，当超出了最大数量，那么最久没有被访问的缓存实例将被销毁
+
+### teleport
+
+当一个组件在pc端需要当做浮层来使用，在移动端需要当做内联使用，可以使用teleport的什么属性
+
+```javascript
+<Teleport :disabled="isMobile"></Teleport>
+```
+
+
+
+
+
+在vue2中如何包装一个teleport，teleport的实现原理
+
+
 
 
 
