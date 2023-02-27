@@ -290,7 +290,8 @@ const props = defineProps({
 - 当props是一个对象或者数组的时候在子组件中可以被直接修改?    会报错吗?
 
 - .once修饰符的作用
-- vue父子组件的通信方式有哪几种?
+
+- vue父子组件的通信方式有哪几种?**mitt**
 
 - @click跟@click.native的区别?
 
@@ -309,5 +310,17 @@ const props = defineProps({
   ```
 
 - useVmodel原理
+
 - 实现一个v-model.capitalize的思路
+
 - JSON.parse(JSON.stringify(value)) 是深拷贝还是浅拷贝
+
+- s-slot传递的数据可以修改吗
+
+```typescript
+  <subAttrs v-slot="{message,count}" @click.native="clickFn">
+    {{ message.split('').reverse() }}
+    <button @click="count=count+1">{{count}}</button>
+  </subAttrs>
+```
+
