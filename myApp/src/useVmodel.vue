@@ -16,8 +16,6 @@ import providePlay from './components/provide.vue'
 import attrs from './components/useAttrs.vue'
 import customInput from './components/customInput.vue'
 import vModel from './components/vModel.vue'
-import composiable from './components/composiable.vue'
-import composiable2 from './components/conposiable2.vue'
 const count = ref(0)
 const age = ref(0)
 const father = ref({
@@ -58,9 +56,6 @@ const lastName = ref('')
     <attrs class="attrs" @click="onClick" data-stats="gggg"/>
     <customInput v-model="count"/>
     <vModel v-model:firstName="firstName" v-model:lastName="lastName"/>
-    {{ firstName }} {{ lastName }}
-    <composiable/>
-    <composiable2/>
 </template>
 
 <style scoped>

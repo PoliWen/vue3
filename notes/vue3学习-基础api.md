@@ -219,7 +219,7 @@ const foo = markRaw({})
 console.log(isReactive(reactive(foo))) // false
 ```
 
-### h()**函数的使用
+### h()函数的使用
 
 ```javascript
 h('tag',{},'nodeText') // 一共接收三个参数
@@ -555,7 +555,7 @@ export function useMouse(){
 }
 ```
 
-### 关于style选择器**
+### 关于style选择器
 
 ```
 :deep(div)   // 深度选择器，可以控制子选择器的样式
