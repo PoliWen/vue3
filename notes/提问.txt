@@ -1,0 +1,15 @@
+提问
+1.说一下这几个区别：ref，reactive，unRef，toRef，toRefs，toRaw，markRaw，shallowRef，shallowReactive
+2.如何将一个在scoped里面的样式应用到全局，如何控制插槽里面的样式
+3.什么是静态提升，与静态标记
+4.什么是编译器，什么是渲染器，编译-挂载-更新之间是什么样的逻辑关系
+5.vuejs打包构建的产物有哪些
+6.生产部署vue用的history模式，刷新二级路由页面404怎么处理
+7.vuejs在打包到生产环境去除了哪些内容？
+8.tree-shaking有时候无法清除副作用函数，应该添加什么标记，让构建工具可是识别这个函数可以被清除掉
+9.v-memo的使用
+10.组合式api的优点
+
+
+
+
