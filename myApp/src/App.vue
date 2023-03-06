@@ -18,6 +18,7 @@ import customInput from './components/customInput.vue'
 import vModel from './components/vModel.vue'
 import composiable from './components/composiable.vue'
 import composiable2 from './components/conposiable2.vue'
+import useToggle from './components/useToggle.vue'
 const count = ref(0)
 const age = ref(0)
 const father = ref({
@@ -61,6 +62,7 @@ const lastName = ref('')
     {{ firstName }} {{ lastName }}
     <composiable/>
     <composiable2/>
+    <useToggle/>
 </template>
 
 <style scoped>
