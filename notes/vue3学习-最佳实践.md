@@ -263,9 +263,51 @@ vue模板被编译为渲染函数，运行时渲染器调用渲染函数，生�
 
 对于不是正在进入或者离开的DOM元素，我们可以通过动态的给元素添加css class来触发动画
 
-### 响应性语法糖（讨论，是否需要在项目中引入VUE Macros）
+### 自定义元素
 
+如何让vue知道特定元素是一个自定义元素而跳过对该组件的解析，可以使用
 
+```javascript
+app.config.compilerOptions.isCustomElement = (tag) => tag.includes('-')
+```
+
+在vite中配置
+
+```javascript
+// vite.config.js
+import vue from '@vitejs/plugin-vue'
+
+export default {
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // 将所有带短横线的标签名都视为自定义元素
+          isCustomElement: (tag) => tag.includes('-')
+        }
+      }
+    })
+  ]
+}
+```
+
+### 响应性语法糖（讨论，是否需要在项目中引入Vue Macros）
+
+使用了$ref则不需要在每次使用ref的时候加上.value
+
+每一个返回的ref的响应式api都有一个与之相对应的$前缀宏函数
+
+- ref->$ref
+- computed-> $computed
+- shallowRef -> $shallowRef
+- customRef-> $customRef
+- toRef-> $toRef
+
+```javascript
+import { $ref } from 'vue/macros'
+
+let count = $ref(0)
+```
 
 ### 提问
 
