@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, provide } from 'vue'
+import type {Ref} from 'vue'
 import setUpPlay from './components/setUpPlay.vue'
 import watch from './components/watch.vue'
 import unwatch from './components/unWatch.vue'
@@ -19,6 +20,7 @@ import vModel from './components/vModel.vue'
 import composiable from './components/composiable.vue'
 import composiable2 from './components/conposiable2.vue'
 import useToggle from './components/useToggle.vue'
+import vueRouter from './components/vueRouter.vue'
 const count = ref(0)
 const age = ref(0)
 const father = ref({
@@ -47,8 +49,11 @@ function onClick(){
 }
 const firstName = ref('')
 const lastName = ref('')
+
+const year = ref('2020') as Ref<string | number>
 </script>
 <template>
+   
     <myInput v-model.capitalize="count"/>
     <input type="text" v-model.number="age">
     <veelidate/>
@@ -63,6 +68,14 @@ const lastName = ref('')
     <composiable/>
     <composiable2/>
     <useToggle/>
+    <vueRouter/>
+ 
+    <name>main</name>
+    <ul class="skip-links">
+      <li>
+        <a href="#main" ref="skipLink" class="skip-link">Skip to main content</a>
+      </li>
+    </ul> 
 </template>
 
 <style scoped>
