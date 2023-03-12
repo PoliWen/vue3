@@ -20,6 +20,7 @@ import vModel from './components/vModel.vue'
 import composiable from './components/composiable.vue'
 import composiable2 from './components/conposiable2.vue'
 import vueRouter from './components/vueRouter.vue'
+import Modal from './components/Modal.vue'
 const count = ref(0)
 const age = ref(0)
 const father = ref({
@@ -74,9 +75,14 @@ const year = ref('2020') as Ref<string | number>
         <a href="#main" ref="skipLink" class="skip-link">Skip to main content</a>
       </li>
     </ul> 
+
+    <Modal>
+      <div class="slot">slot</div>
+    </modal>
+    
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -88,5 +94,11 @@ const year = ref('2020') as Ref<string | number>
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+:deep(.modal-title){
+  background: red;
+  .modal-title{
+    background: red;
+  }
 }
 </style>
