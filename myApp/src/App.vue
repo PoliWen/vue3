@@ -19,6 +19,7 @@ import customInput from './components/customInput.vue'
 import vModel from './components/vModel.vue'
 import composiable from './components/composiable.vue'
 import composiable2 from './components/conposiable2.vue'
+import useToggle from './components/useToggle.vue'
 import vueRouter from './components/vueRouter.vue'
 import Modal from './components/Modal.vue'
 const count = ref(0)
@@ -67,6 +68,7 @@ const year = ref('2020') as Ref<string | number>
     {{ firstName }} {{ lastName }}
     <composiable/>
     <composiable2/>
+    <useToggle/>
     <vueRouter/>
  
     <name>main</name>

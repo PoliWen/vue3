@@ -6,7 +6,7 @@ sfc文件的的template内容会被提取出来，传递给@vue/compiler-dom，�
 
 vuejs的打包产物，各代表什么意思，在什么场景下使用？
 
-![image-20230302080317858](C:\Users\kingw\AppData\Roaming\Typora\typora-user-images\image-20230302080317858.png)
+https://unpkg.com/browse/vue@3.2.47/dist/
 
 @vitejs/plugin-vue的作用，为vite提供vuesfc支持的官方插件
 
@@ -91,8 +91,6 @@ export function createApp() {
 - 服务端渲染支持
 - 与vueDevtools集成，包括了时间轴，组件内部审查和时间旅行调试
 
-
-
 ### ssr的特点?
 
 响应性在ssr中是不必要的，因为没有用户交互和DOM更新
@@ -164,21 +162,21 @@ treeShaking有时候是无法清除一些副作用函数的，vue3中是如何�
 /*#__PUER__*/  表明调用这个函数不会产生副作用，可以使用tree-shaking移除掉
 ```
 
-更新时优化
+**更新时优化**
 
 - 让props尽量稳定
 - v-once渲染元素和组件一次，跳过之后的更新
 - v-memo的使用
 
-通用优化
+v-memo的使用
+
+`v-memo` 其实就是判断 memo 的依赖是否改变，**没有改变则使用缓存的 VNode**，否则就调用 render 函数创建新的 VNode
+
+**通用优化**
 
 - 大型虚拟列表优化
 - 使用shallowRef，shallowReactive
 - 减少不必要的组件抽象
-
-### 无障碍访问
-
-
 
 ### 安全
 
@@ -247,7 +245,7 @@ const double = computed<number>(()=> count.value * 2)
 
 ### 深入响应式系统
 
-
+ref，reactive，unRef，toRef，toRefs，toRaw，markRaw，shallowRef，shallowReactive的实现原理
 
 ### 渲染机制
 
@@ -261,9 +259,68 @@ vue模板被编译为渲染函数，运行时渲染器调用渲染函数，生�
 
 编译器在编译模板的时候会对DOM属性进行分析，打上标记，哪些是动态属性，哪些是静态属性，渲染器在渲染Vnode的时候，就知道这些静态标记的内容是静态的，不需要更新的可以跳过去查找。
 
+### 动画技巧
 
+对于不是正在进入或者离开的DOM元素，我们可以通过动态的给元素添加css class来触发动画
 
+### 自定义元素
 
+如何让vue知道特定元素是一个自定义元素而跳过对该组件的解析，可以使用
+
+```javascript
+app.config.compilerOptions.isCustomElement = (tag) => tag.includes('-')
+```
+
+在vite中配置
+
+```javascript
+// vite.config.js
+import vue from '@vitejs/plugin-vue'
+
+export default {
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // 将所有带短横线的标签名都视为自定义元素
+          isCustomElement: (tag) => tag.includes('-')
+        }
+      }
+    })
+  ]
+}
+```
+
+### 响应性语法糖（讨论，是否需要在项目中引入Vue Macros）
+
+使用了$ref则不需要在每次使用ref的时候加上.value
+
+每一个返回的ref的响应式api都有一个与之相对应的$前缀宏函数
+
+- ref->$ref
+- computed-> $computed
+- shallowRef -> $shallowRef
+- customRef-> $customRef
+- toRef-> $toRef
+
+```javascript
+import { $ref } from 'vue/macros'
+
+let count = $ref(0)
+```
+
+### 提问
+
+1.说一下这几个区别：ref，reactive，unRef，toRef，toRefs，toRaw，markRaw，shallowRef，shallowReactive
+2.如何将一个在scoped里面的样式应用到全局，如何控制插槽里面的样式
+3.什么是静态提升，与静态标记
+4.什么是编译器，什么是渲染器，编译-挂载-更新之间是什么样的逻辑关系
+5.vuejs打包构建的产物有哪些
+6.生产部署vue用的history模式，刷新二级路由页面404怎么处理
+7.vuejs在打包到生产环境去除了哪些内容？
+8.tree-shaking有时候无法清除副作用函数，应该添加什么标记，让构建工具可是识别这个函数可以被清除掉
+9.v-once和v-memo的使用，`v-memo` 传入空依赖数组 (`v-memo="[]"`) 将与 `v-once` 效果相同
+10.组合式api的优点
 
 
 

@@ -6,7 +6,7 @@
 
 命令规则以use开头的驼峰命名
 
-问题，如何让一个组合式api变成状态可共享?
+如何让一个组合式api变成状态可共享?
 
 ```javascript
 // useX
@@ -79,21 +79,44 @@ export function createSharedComposable(composable){
 }
 ```
 
+实现一个useToggle函数
+
+```javascript
+
+<script setup lang="ts">
+import { ref } from 'vue'
+function useToggle(initValue:boolean){
+  const state = ref(initValue)
+  function toggle(){
+    state.value = !state.value
+  }
+  return {
+    state,
+    toggle
+  }
+}
+const {state,toggle} = useToggle(false)
+</script>
+
+<template>
+ <p>{{state ? 'on' : 'off'}}</p>
+ <p @click="toggle">Toggle State</p>
+</template>
+```
+
+
+
 ### 自定义指令
 
 问题，在组件上绑定指令，如果组件内部有多个根节点，可以通过v-bind="$attrs"来指定传递的元素吗?
 
-如何设计一个自定义指令，有哪些场景下可以使用自定义指令，你写过那些自定义指令
+如何设计一个自定义指令，有哪些场景下可以使用自定义指令？
 
-
-
-
+v-lazy-img，v-observer，v-fixed，v-click-outside， v-tooltips，  v-fixbold
 
 ### app.config.globalProperties
 
 app.config.globalProperties是vue.prototype的一种代替，用于注册能够被所有组件访问到的全局属性
-
-
 
 ### transition动画
 
@@ -122,7 +145,7 @@ leave-from，leave-active，leave-to
   </Transition>
 ```
 
-监听动画结束的原生就是事件是
+监听动画结束的原生事件是
 
 ```javascript
 el.addEventListener('transitionend',()=>{})
@@ -140,17 +163,32 @@ keepalive 的max属性限制缓存的最大数量，当超出了最大数量，�
 <Teleport :disabled="isMobile"></Teleport>
 ```
 
+在vue2中如何包装一个teleport?
 
+```javascript
+<script>
+    export default {
+        name: 'teleport',
+        props: {
+            /* 移动至哪个标签内，最好使用id */
+            to: {
+                type: String,
+                required: true
+            }
+        },
+ 
+        mounted() {
+            document.querySelector(this.to).appendChild(this.$el)
+        },
+ 
+        destroyed() {
+            document.querySelector(this.to).removeChild(this.$el)
+        },
+ 
+        render() {
+            return <div>{this.$scopedSlots.default()}</div>
+        }
+    }
+</script>
 
-
-
-在vue2中如何包装一个teleport，teleport的实现原理
-
-
-
-
-
-
-
-
-
+```
