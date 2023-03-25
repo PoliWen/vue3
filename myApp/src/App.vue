@@ -21,7 +21,9 @@ import composiable from './components/composiable.vue'
 import composiable2 from './components/conposiable2.vue'
 import useToggle from './components/useToggle.vue'
 import vueRouter from './components/vueRouter.vue'
-import Modal from './components/Modal.vue'
+// import Modal from './components/Modal.vue'
+import bindStyle from '/components/bindStyle.vue'
+import playground from './playground/index.vue'
 const count = ref(0)
 const age = ref(0)
 const father = ref({
@@ -78,9 +80,11 @@ const year = ref('2020') as Ref<string | number>
       </li>
     </ul> 
 
-    <Modal>
+    <!-- <Modal>
       <div class="slot">slot</div>
-    </modal>
+    </modal> -->
+
+    <playground/>
     
 </template>
 

@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import Modal from './Modal.vue'
+// import Modal from './Modal.vue'
 import { inject } from 'vue'
 const {count,increaseCount} = inject('count') 
 

@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { useMouse } from '../useHooks/index'
+import { useMouse } from '../composables/index'
 const {x, y} = useMouse()
 
 </script>

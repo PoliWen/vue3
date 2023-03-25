@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { useX } from '../useHooks/index'
+import { useX } from '../composables/index'
 const { x, increase } = useX()
 
 </script>
