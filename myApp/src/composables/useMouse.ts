@@ -1,11 +1,15 @@
 import {onMounted, onUnmounted, ref} from 'vue'
 function useEventListener(target:EventTarget,event:string, callback:(e: any )=> void){
+    const cleanup = ()=>{
+        target.removeEventListener(event,callback)
+    }
     onMounted(()=>{
         target.addEventListener(event,callback)
     })
     onUnmounted(()=>{
-        target.removeEventListener(event,callback)
+        cleanup
     })
+    return cleanup
 }
 
 export function useMouse(){

@@ -1,3 +1,5 @@
 export * from './useMouse'
 export * from './useX'
 export * from './useDark'
+export * from './useTitle'
+export * from './useMediaQuery'

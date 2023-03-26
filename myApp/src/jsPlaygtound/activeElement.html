@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>activeElement</title>
+</head>
+
+<body>
+
+    <input type="text" id="input1" value="1">
+    <input type="text" id="input2" value="2">
+    <input type="text" id="input3" value="3">
+    <button onclick="getActiveElement()">获取焦点元素</button>
+
+    <script>
+        function getActiveElement() {
+            document.getElementById("input1").focus();
+            var activeElement = document.activeElement;
+            console.log(activeElement);
+        }
+    </script>
+
+</body>
+
+</html>
