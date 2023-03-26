@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>activeElement</title>
+</head>
+
+<body>
+
+    <input type="text" id="input1" value="1">
+    <input type="text" id="input2" value="2">
+    <input type="text" id="input3" value="3">
+    <button onclick="getActiveElement()">获取焦点元素</button>
+
+    <script>
+        // 开始执行操作的函数
+        function startOperation() {
+            console.log('Operation started!');
+            // 这里可以编写具体的操作逻辑
+        }
+
+        // 停止执行操作的函数
+        function stopOperation() {
+            console.log('Operation stopped!');
+            // 这里可以编写具体的操作逻辑
+        }
+
+        // 监听 visibilitychange 事件
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                startOperation(); // 页面可见时开始执行操作
+            } else {
+                stopOperation(); // 页面不可见时停止执行操作
+            }
+        });
+
+        // 实际的应用场景
+        // 音乐播放器对象
+        const audioPlayer = document.querySelector('#audio-player');
+
+        // 监听 visibilitychange 事件
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                audioPlayer.play(); // 网站处于前台，恢复播放音乐
+            } else {
+                audioPlayer.pause(); // 网站处于后台，暂停播放音乐
+            }
+        });
+    </script>
+
+</body>
+
+</html>
