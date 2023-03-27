@@ -409,6 +409,15 @@ export function useDark() {
 
 ### vueuse的库分析
 
+@vueuse/components如何让组合式api支持以组件形式使用的？
+
+```javascript
+<UseMouse v-slot="{ x, y }">
+  x: {{ x }}
+  y: {{ y }}
+</UseMouse>
+```
+
 
 
 
