@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>讲解elementFromPoint的使用</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #drag {
+      width: 100px;
+      height: 100px;
+      background-color: #f00;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="drag"></div>
+  <script>
+    const drag = document.getElementById('drag');
+    let dragTarget = null; // 存储被拖动的元素节点
+
+    // 鼠标按下时记录需要拖动的元素
+    drag.addEventListener('mousedown', (event) => {
+      dragTarget = document.elementFromPoint(event.clientX, event.clientY);
+    });
+
+    // 鼠标移动时更新元素位置
+    document.addEventListener('mousemove', (event) => {
+      if (dragTarget) { // 如果已经获取到需要拖动的元素
+        const x = event.clientX + 'px';
+        const y = event.clientY + 'px';
+        dragTarget.style.left = x;
+        dragTarget.style.top = y;
+      }
+    });
+
+    // 鼠标松开时清空元素
+    document.addEventListener('mouseup', () => {
+      dragTarget = null;
+    });
+  </script>
+</body>
+</html>
