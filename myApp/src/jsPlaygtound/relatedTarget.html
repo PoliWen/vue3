@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="myButton">my button</button>
+
+  <script>
+    var btn = document.getElementById('myButton');
+    btn.addEventListener('mouseover', function(event) {
+      var relatedTarget = event.relatedTarget || event.toElement;
+      console.log('relatedTarget', relatedTarget.tagName)
+      if (relatedTarget && relatedTarget.tagName == 'BUTTON') {
+        console.log(11111111)
+        // 用户从另一个按钮移动到该按钮
+      } else {
+        console.log(22222)
+        // 用户从其它元素移动到该按钮
+      }
+    });
+
+    btn.addEventListener('mouseout', function(event) {
+      var relatedTarget = event.relatedTarget || event.toElement;
+      console.log('relatedTarget', relatedTarget.tagName)
+      if (relatedTarget && relatedTarget.tagName == 'BUTTON') {
+        console.log(333333)
+        // 用户将鼠标移出该按钮，移到另一个按钮上
+      } else {
+        // 用户将鼠标移出该按钮，不在任何按钮上
+        console.log(444444444444)
+      }
+    });
+  </script>
+  
+</body>
+</html>

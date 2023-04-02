@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pointer Event</title>
+</head>
+<body>
+  <div id="demo">pointer Event</div>
+  <script>
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(function(battery) {
+        // 获取电池状态
+        updateBatteryStatus(battery)
+
+        // 监听电池状态更改事件
+        battery.addEventListener('chargingchange', function() {
+          updateBatteryStatus(battery)
+        })
+
+        battery.addEventListener('levelchange', function() {
+          updateBatteryStatus(battery)
+        })
+
+        battery.addEventListener('chargingtimechange', function() {
+          updateBatteryStatus(battery)
+        })
+
+        battery.addEventListener('dischargingtimechange', function() {
+          updateBatteryStatus(battery)
+        })
+      })
+    }
+
+    function updateBatteryStatus(battery) {
+      console.log("Battery level: " + battery.level * 100 + "%")
+      console.log("Charging status: " + (battery.charging ? "Charging" : "Not Charging"))
+      console.log("Time remaining to full charge: " + battery.chargingTime + " seconds")
+      console.log("Time remaining to discharge: " + battery.dischargingTime + " seconds")
+    }
+
+  </script>
+  
+</body>
+</html>

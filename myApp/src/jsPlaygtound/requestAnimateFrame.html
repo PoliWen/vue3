@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>使用requestAnimationFrame实现动画效果</title>
+</head>
+<style>
+  #box {
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    position: absolute;
+    top: 40px;
+    left: 0;
+  }
+</style>
+<body>
+	<button id="startBtn">开始动画</button>
+	<button id="stopBtn">停止动画</button>
+
+	<div id="box"></div>
+
+	<script>
+		var element = document.getElementById('box');
+    var requestId;
+    var position = 0;
+
+    function animate() {
+      // 移动元素
+      position += 5;
+      element.style.transform = 'translateX(' + position + 'px)';
+
+      // 检查是否到达目标位置
+      requestId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      // 取消之前的动画请求
+      cancelAnimationFrame(requestId);
+
+      // 重置位置
+      // position = 0;
+      element.style.transform = 'translateX(' + position + 'px)';
+
+      // 启动新的动画请求
+      requestId = requestAnimationFrame(animate);
+    }
+
+    function stopAnimation() {
+      // 取消动画请求
+      cancelAnimationFrame(requestId);
+    }
+
+    	// 开始动画
+		document.getElementById('startBtn').addEventListener('click',startAnimation);
+
+		// 停止动画
+		document.getElementById('stopBtn').addEventListener('click',stopAnimation);
+	</script>
+</body>
+</html>

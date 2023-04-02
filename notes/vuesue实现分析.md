@@ -163,6 +163,25 @@ export function useTitle(
 
 改造之后就可以支持传入getter函数了。
 
+与之相反还有一个resolveUnref方法
+
+```javascript
+function resolveUnref<T>(input: MaybeComputedRef<T>): T {
+  return typeof input === 'function'
+    ? input()
+    : unref(r)
+}
+```
+
+在vueuse库中大量用到了这个方法
+
+```javascript
+export function useFloor(value: MaybeComputedRef<number>): ComputedRef<number> {
+  return computed<number>(() => Math.floor(resolveUnref(value)))
+}
+
+```
+
 ###	如何在组合式函数里清除副作用函数
 
 我们都知道执行watch会返回一个回调函数，调用watch执行后的回调函数就可以清除这个watch的副作用
@@ -405,26 +424,73 @@ export function useDark() {
 
 通过实现一个useDark方法，相信我们对可组合式api有了一个更深入的理解，可组合式api可以将单一职责的方法进行封装，形成一块块积木，然后可以将这些积木拼接起来，实现更多的功能。
 
-![image-20230326221503685](C:\Users\kingw\AppData\Roaming\Typora\typora-user-images\image-20230326221503685.png)
+![image-20230327135321868](C:\Users\10800\AppData\Roaming\Typora\typora-user-images\image-20230327135321868.png)
 
-### vueuse的库分析
+### vueuse的库注意事项
 
-@vueuse/components如何让组合式api支持以组件形式使用的？
+@vueuse/components如何让组合式api支持以组件形式使用
 
 ```javascript
-<UseMouse v-slot="{ x, y }">
-  x: {{ x }}
-  y: {{ y }}
-</UseMouse>
+<UseEyeDropper v-slot="{ isSupported, sRGBHex, open }">
+  <button :disabled="!isSupported" @click="open">
+    sRGBHex: {{ sRGBHex }}
+  </button>
+</UseEyeDropper>
 ```
 
+```javascript
+import { useEyeDropper } from '@vueuse/core'
 
+export const UseEyeDropper = /* #__PURE__ */ defineComponent({
+  name: 'UseEyeDropper',
+  props: {
+    sRGBHex: String,
+  },
+  setup(props, { slots }) {
+    const data = reactive(useEyeDropper())
 
+    return () => {
+      if (slots.default)
+        return slots.default(data)
+    }
+  },
+})
+```
 
+使用window对象或者document对象时候， 要注意兼容ssr和node环境，可使用ConfigurableWindow类型，为了能够在iframe和测试模拟以及ssr环境可进行配置
 
+```javascript
+export interface ConfigurableWindow {
+  window?: Window
+}
+```
 
+多层次嵌套的数据使用shallowRef
 
+```javascript
+export function useFetch<T>(url: MaybeRef<string>) {
+  // use `shallowRef` to prevent deep reactivity
+  const data = shallowRef<T | undefined>()
+  const error = shallowRef<Error | undefined>()
 
+  fetch(unref(url))
+    .then(r => r.json())
+    .then(r => data.value = r)
+    .catch(e => error.value = e)
 
+  /* ... */
+}
+```
 
+对于浏览器还未大量使用的api，需要进行isSupported判断
 
+```javascript
+export function useEyeDropper() {
+  const isSupported = useSupported(() => typeof window !== 'undefined' && 'EyeDropper' in window)
+  async function open() {
+    if (!isSupported.value)
+      return
+  }
+  return { isSupported }
+}
+```

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pointer Event</title>
+</head>
+<body>
+  <div id="demo">pointer Event</div>
+  <script>
+    const demo = document.getElementById("demo");
+    demo.addEventListener("pointerdown", (e) => {
+      console.log(demo)
+      console.log(e.target)
+      console.log(e.taget !== demo)
+      console.log('pointerdown',e);
+      console.log(e.clientX, e.clientY);
+      console.log(e.pageX, e.pageY);
+      console.log(e.screenX, e.screenY);
+    });
+    demo.addEventListener("pointerup", (e) => {
+      console.log('pointerup',e);
+    });
+    demo.addEventListener("pointerleave", (e) => {
+      console.log('leave',e);
+    });
+
+  </script>
+  
+</body>
+</html>
