@@ -7,7 +7,7 @@
 ```javascript
 const div = document.getElementById('div')
 div.innerHTML = 'hello world'
-div.addEventLisenter('click',()=>{alert('ok')})
+div.addEventListener('click',()=>{alert('ok')})
 ```
 
 上面这段代码描述是一个做事的过程: ”获取一个div，给div设置一个文本，点击div 弹出一个ok“
@@ -128,6 +128,51 @@ utils.registerErrorHandler((e)=>{
 ```
 
 ### vue3的设计思路
+
+什么是渲染器，什么是编译器？
+
+渲染器的作用就是把虚拟DOM渲染为真实的DOM
+
+编译器的作用就是将模板编译为渲染函数
+
+渲染函数的基本实现
+
+```
+  const vnode = {
+            tag: 'div',
+            props: {
+                id: 'app',
+                onClick: () => alert('hello, vue3!')
+            },
+            children: 'click me'
+        }
+
+        function render(vnode, root) {
+            const el = document.createElement(vnode.tag)
+            for (const key in vnode.props) {
+                // 添加事件
+                if (/^on/.test(key)) {
+                    el.addEventListener(
+                        key.substr(2).toLowerCase(),
+                        vnode.props[key]
+                    )
+                } else {
+                    el.setAttribute(key, vnode.props[key])
+                }
+            }
+            if (typeof vnode.children === 'string') {
+                el.appendChild(document.createTextNode(vnode.children))
+            } else if (Array.isArray(vnode.children)) {
+                vnode.children.forEach(child => {
+                    render(child, el)
+                })
+            }
+            root && root.appendChild(el)
+        }
+        render(vnode, document.getElementById('app'))
+```
+
+
 
 
 

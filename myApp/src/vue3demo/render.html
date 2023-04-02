@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue3渲染函数的基本实现</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        const vnode = {
+            tag: 'div',
+            props: {
+                id: 'myComponent',
+                onClick: () => alert('hello, vue3!'),
+                style: 'color:red'
+            },
+            children: [{
+                tag: 'span',
+                props: {
+                    id: 'span1',
+                    onClick: () => alert('hello, span1!')
+                },
+                children: 'hello'
+            }]
+        }
+
+        function render(vnode, root) {
+            const el = document.createElement(vnode.tag)
+            for (const key in vnode.props) {
+                // 添加事件
+                if (/^on/.test(key)) {
+                    el.addEventListener(
+                        key.substr(2).toLowerCase(),
+                        vnode.props[key]
+                    )
+                } else {
+                    el.setAttribute(key, vnode.props[key])
+                }
+            }
+            if (typeof vnode.children === 'string') {
+                el.appendChild(document.createTextNode(vnode.children))
+            } else if (Array.isArray(vnode.children)) {
+                vnode.children.forEach(child => {
+                    render(child, el)
+                })
+            }
+            root && root.appendChild(el)
+        }
+        render(vnode, document.getElementById('app'))
+    </script>
+
+</body>
+
+</html>
