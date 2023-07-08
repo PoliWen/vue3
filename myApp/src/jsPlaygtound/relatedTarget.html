@@ -13,6 +13,7 @@
     var btn = document.getElementById('myButton');
     btn.addEventListener('mouseover', function(event) {
       var relatedTarget = event.relatedTarget || event.toElement;
+      console.log('eventTarget',event.target)
       console.log('relatedTarget', relatedTarget.tagName)
       if (relatedTarget && relatedTarget.tagName == 'BUTTON') {
         console.log(11111111)
@@ -25,6 +26,7 @@
 
     btn.addEventListener('mouseout', function(event) {
       var relatedTarget = event.relatedTarget || event.toElement;
+      console.log('eventTarget',event.target)
       console.log('relatedTarget', relatedTarget.tagName)
       if (relatedTarget && relatedTarget.tagName == 'BUTTON') {
         console.log(333333)
@@ -34,6 +36,18 @@
         console.log(444444444444)
       }
     });
+    document.addEventListener('mouseenter',function(event){
+      const isLeft = event.relatedTarget || event.toElement
+      console.log(!isLeft)
+      console.log(event.relatedTarget || event.toElement)
+      console.log(event.target)
+    })
+    document.addEventListener('mouseleave',function(event){
+      const isLeft = event.relatedTarget || event.toElement
+      console.log(!isLeft)
+      console.log(event.relatedTarget || event.toElement)
+      console.log(event.target)
+    })
   </script>
   
 </body>
