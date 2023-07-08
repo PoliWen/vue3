@@ -11,6 +11,7 @@
   "dependencies": {
     "@vueuse/components": "^7.5.3",
     "@vueuse/core": "^7.5.3",
+    "express": "^4.18.2",
     "vee-validate": "^4.7.4",
     "vue": "^3.2.45",
     "vue-router": "^4.0.12",

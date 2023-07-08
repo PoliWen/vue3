@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>effect嵌套</title>
+</head>
+
+<body>
+
+    <script>
+        const bucket = new WeakMap()
+
+        function track(target, key) {
+            if (!activeEffect) return
+            let depsMap = bucket.get(target)
+            if (!depsMap) {
+                bucket.set(target, (depsMap = new Map()))
+            }
+            let deps = depsMap.get(key)
+            if (!deps) {
+                depsMap.set(key, (deps = new Set()))
+            }
+            deps.add(activeEffect)
+        }
+
+        function trigger(target, key) {
+            const depsMap = bucket.get(target)
+            if (!depsMap) return
+            const effects = depsMap.get(key)
+            // console.log('fn', effects)
+            effects && effects.forEach(fn => {
+                fn()
+            })
+        }
+
+
+
+        const data = {
+            foo: 1,
+            bar: 2
+        }
+        const obj = new Proxy(data, {
+            get(target, key) {
+                track(target, key)
+                return target[key]
+            },
+            set(target, key, value) {
+                target[key] = value
+                trigger(target, key)
+            }
+        })
+
+        function cleanup(effectFn) {
+            for (let i = 0; i < effectFn.deps.length; i++) {
+                const deps = effectFn.deps[i]
+                deps.delete(effectFn)
+            }
+            effectFn.deps.length = 0
+        }
+
+        let activeEffect
+        let effectStack = []
+
+        function effect(fn) {
+            const effectFn = () => {
+                cleanup(effectFn)
+                activeEffect = effectFn
+                effectStack.push(effectFn)
+                fn()
+                effectStack.pop()
+                activeEffect = effectStack[effectStack.length - 1]
+            }
+            effectFn.deps = []
+            effectFn()
+        }
+
+
+
+        let temp1, temp2
+
+        effect(function effectFn1() {
+            console.log('effect1')
+            effect(function effectFn2() {
+                console.log('effect2')
+                temp2 = obj.bar
+            })
+            temp1 = obj.foo
+        })
+
+
+        obj.foo = 3
+        obj.bar = 4
+    </script>
+
+</body>
+
+</html>

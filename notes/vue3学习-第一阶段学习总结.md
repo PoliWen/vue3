@@ -1,14 +1,14 @@
-# vue3学习—第一阶段学习总结
+# vue3 学习—第一阶段学习总结
 
 通过第一阶段的收获主要是进行了查漏补缺，掌握，了解了一些平时很少见，少用的知识点
 
-### 全局api
+### 全局 api
 
-app.config.globalProperties是vue2的vue.prototype的一种代替，定义好之后在任意组件的实例中都可以进行访问
+app.config.globalProperties 是 vue2 的 vue.prototype 的一种代替，定义好之后在任意组件的实例中都可以进行访问
 
 ```javascript
-function fetch(){ }
-app.config.globalProperties.$http = fetch
+function fetch() {}
+app.config.globalProperties.$http = fetch;
 ```
 
 ### 命名规则
@@ -27,14 +27,14 @@ app.config.globalProperties.$http = fetch
 ```javascript
 const draggableGuideVisible = computed(() => {
   return (index: number) => {
-    return unref(pictureList).length > 1 && index === 0 && unref(isAllDone)
-  }
-})
+    return unref(pictureList).length > 1 && index === 0 && unref(isAllDone);
+  };
+});
 ```
 
 ### 共享状态修改规则
 
-对于共享状态的修改，一定要统一在定义的地方修改，如果到处进行修改会照成代码维护困难，如直接在子组件修改父组件的数据，需遵循单向数据流的规则，使用pinia，或者使用createSharedComposable
+对于共享状态的修改，一定要统一在定义的地方修改，如果到处进行修改会照成代码维护困难，如直接在子组件修改父组件的数据，需遵循单向数据流的规则，使用 pinia，或者使用 createSharedComposable
 
 ```javascript
 // 供给方组件
@@ -55,18 +55,18 @@ const {location, updateLocation} = inject('location')
 
 ### effectScope
 
-使用effectScope可以收集副作用函数，并且进行集中清除
+使用 effectScope 可以收集副作用函数，并且进行集中清除
 
 ```javascript
-const scope = effectScope()
-scope.run(()=>{
-  watch(count,(newVal,oldVal) => { })
-  watchEffect(()=> { })    
-})
-scope.stop()
+const scope = effectScope();
+scope.run(() => {
+  watch(count, (newVal, oldVal) => {});
+  watchEffect(() => {});
+});
+scope.stop();
 ```
 
-### typeScript与vue
+### typeScript 与 vue
 
 为模板引用定义类型
 
@@ -87,15 +87,15 @@ function handleChange(event: Event) {
 }
 ```
 
-为provide，inject标注类型
+为 provide，inject 标注类型
 
 ```javascript
-const isFeedBack = ref(false)
-provide('isFeedBack',isFeedBack)
-const isFeedBack = inject<boolean>('isFeedBack')
+const isFeedBack = ref(false);
+provide("isFeedBack", isFeedBack);
+const isFeedBack = inject < boolean > "isFeedBack";
 ```
 
-使用propType给对象标注类型
+使用 propType 给对象标注类型
 
 ```javascript
 import type { propType } from 'vue'
@@ -109,7 +109,7 @@ const props = defineProps({
 })
 ```
 
-### style选择器
+### style 选择器
 
 ```javascript
 :deep(div)   // 深度选择器，可以控制子选择器的样式
@@ -119,18 +119,21 @@ const props = defineProps({
 :global(.red) // 全局选择器，可以将此样式应用到全局
 ```
 
-scoped选择器原理
+scoped 选择器原理
 
 ```css
-<div class="modal-title" data-v-94fcd891>弹窗标题</div>
-.modal-title[data-v-94fcd891]{
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
+<div
+  class="modal-title"
+  data-v-94fcd891
+  > 弹窗标题</div
+  > .modal-title[data-v-94fcd891] {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
 }
 ```
 
-deep选择器原理
+deep 选择器原理
 
 ```javascript
 <div data-v-94fcd891 data-v-7a7a37b1 class="modal">
@@ -142,14 +145,14 @@ deep选择器原理
 }
 ```
 
-global选择器原理
+global 选择器原理
 
 ```javascript
 <div data-v-94fcd891 class="mask"></div>
 .mask{}
 ```
 
-slotted选择器原理
+slotted 选择器原理
 
 ```javascript
 <div data-v-94fcd891-s class="slot">slot</div>
@@ -158,13 +161,13 @@ slotted选择器原理
 }
 ```
 
-一个组件使用teleport传递到body组件了，如何局部控制组件样式？
+一个组件使用 teleport 传递到 body 组件了，如何局部控制组件样式？
 
 ### 响应性语法糖
 
-使用了$ref则不需要在每次使用ref的时候加上.value
+使用了$ref 则不需要在每次使用 ref 的时候加上.value
 
-每一个返回的ref的响应式api都有一个与之相对应的$前缀宏函数
+每一个返回的 ref 的响应式 api 都有一个与之相对应的$前缀宏函数
 
 - ref->$ref
 - computed-> $computed
@@ -173,18 +176,18 @@ slotted选择器原理
 - toRef-> $toRef
 
 ```javascript
-import { $ref } from 'vue/macros'
+import { $ref } from "vue/macros";
 
-let count = $ref(0)
+let count = $ref(0);
 ```
 
-### 使用v-once与v-memo来提升性能
+### 使用 v-once 与 v-memo 来提升性能
 
-v-once让组件只渲染一次，不会进行更新操作
+v-once 让组件只渲染一次，不会进行更新操作
 
-v-memo只有传入的条件进行变更时才会进行组件更新
+v-memo 只有传入的条件进行变更时才会进行组件更新
 
-### 响应式api
+### 响应式 api
 
 shallowRef，shallowReactive，markRaw，toRaw
 

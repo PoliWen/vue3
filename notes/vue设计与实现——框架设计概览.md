@@ -137,60 +137,43 @@ utils.registerErrorHandler((e)=>{
 
 渲染函数的基本实现
 
-```
-  const vnode = {
-            tag: 'div',
-            props: {
-                id: 'app',
-                onClick: () => alert('hello, vue3!')
-            },
-            children: 'click me'
+```javascript
+const vnode = {
+    tag: 'div',
+    props: {
+        id: 'app',
+        onClick: () => alert('hello, vue3!')
+    },
+    children: 'click me'
+}
+
+function render(vnode, root) {
+    const el = document.createElement(vnode.tag)
+    for (const key in vnode.props) {
+        // 添加事件
+        if (/^on/.test(key)) {
+            el.addEventListener(
+                key.substr(2).toLowerCase(),
+                vnode.props[key]
+            )
+        } else {
+            // 添加属性
+            el.setAttribute(key, vnode.props[key])
         }
-
-        function render(vnode, root) {
-            const el = document.createElement(vnode.tag)
-            for (const key in vnode.props) {
-                // 添加事件
-                if (/^on/.test(key)) {
-                    el.addEventListener(
-                        key.substr(2).toLowerCase(),
-                        vnode.props[key]
-                    )
-                } else {
-                    el.setAttribute(key, vnode.props[key])
-                }
-            }
-            if (typeof vnode.children === 'string') {
-                el.appendChild(document.createTextNode(vnode.children))
-            } else if (Array.isArray(vnode.children)) {
-                vnode.children.forEach(child => {
-                    render(child, el)
-                })
-            }
-            root && root.appendChild(el)
-        }
-        render(vnode, document.getElementById('app'))
+    }
+    
+    if (typeof vnode.children === 'string') {
+        el.appendChild(document.createTextNode(vnode.children))
+    } else if (Array.isArray(vnode.children)) {
+        vnode.children.forEach(child => {
+            render(child, el)
+        })
+    }
+    
+    root && root.appendChild(el)
+}
+render(vnode, document.getElementById('app'))
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
