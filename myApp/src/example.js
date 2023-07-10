@@ -1,4 +1,7 @@
 import { createSSRApp, ref } from 'vue'
+
+import { renderToString } from 'vue/server-renderer'
+
 const myComponent = {
   template: `
   <h3>{{ title }}</h3>
@@ -16,6 +19,9 @@ const myComponent = {
     }
   }
 }
-export function createApp() {
-  return createSSRApp(myComponent)
-}
+
+const app = createSSRApp(myComponent)
+
+renderToString(app).then((html) => {
+  console.log(html)
+})
