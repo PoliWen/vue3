@@ -187,7 +187,7 @@ server.get('/', async (req, res) => {
 });
 ```
 
-为了在前台页面中可以使用esm模块，为了演示在index.html 使用了 script 的importmap属性，这个属性，支持在浏览器中使用esm功能。
+为了在前台页面中可以使用esm模块，在index.html 使用了 script 的importmap属性，这个属性，支持在浏览器中使用esm功能。
 
 client-entry.js的代码如下
 
@@ -209,21 +209,25 @@ createApp().mount('#app')
 
 ### 如何支持路由，状态，以及实现脱水与注水
 
+引入router
 
+引入pinia
 
+服务端进行脱水
 
+客户端进行水合
 
 
 
 ### 结合源码讲解renderTostring的实现
 
-
+服务端renderToString是如何实现的
 
 
 
 ### 结合源码讲解createSSRApp() 方法如何实现的
 
-
+客户端createSSRApp()是怎么实现的
 
 关于服务端渲染的文章
 
