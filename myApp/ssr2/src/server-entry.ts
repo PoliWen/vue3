@@ -8,6 +8,7 @@ export async function render(url:string) {
   await router.push(url)
   await router.isReady()
   const html = await renderToString(app)
+  
   return {
     html, 
     __data__: JSON.stringify(app?.__data__), 

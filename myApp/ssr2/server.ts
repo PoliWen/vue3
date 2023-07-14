@@ -18,8 +18,7 @@ async function createServer() {
   // 使用 vite 的 Connect 实例作为中间件
   app.use(vite.middlewares)
 
-   // 提供一个接口用于演示
-   const requestApi = async (req, res) => {
+  const requestApi = async (req, res) => {
     const url = req.originalUrl
     switch(url) {
       case '/api/article-list':

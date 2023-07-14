@@ -14,9 +14,14 @@ import { ref } from 'vue'
 import Nav from '../../components/nav.vue'
 import { useFetch } from '../../utils/useFetch'
 import { useRouter } from 'vue-router';
-
+interface ArticleItem{
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 const router = useRouter()
-const articleList = ref({userId:'',id:'',title:'',body:''})
+const articleList = ref<ArticleItem[]>()
 async function getArticleList(){
   const  data =  await useFetch('http://localhost:3000/api/article-list')
   articleList.value = data
