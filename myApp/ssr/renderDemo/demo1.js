@@ -46,3 +46,10 @@ function renderElementVnode(Vnode){
 }
 
 console.log(renderElementVnode(Element))
+
+// 以上代码存在缺陷
+// 需要考虑是否是自闭合标签
+// 需要考虑名称是否合法，并且需要对属性值进行HTML转义
+// 子节点的类型多种多样，可以是任意类型的虚拟节点，如fragment，组件，函数式组件，文本等，这些都需要处理
+// 标签的子节点也需要进行html转义
+

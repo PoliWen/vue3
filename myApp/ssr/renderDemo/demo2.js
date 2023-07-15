@@ -54,4 +54,9 @@ const Element = {
 
 console.log(renderElementVnode(Element))
 
-
+// 还需要处理boolean的attriute,有指令就代表true，无就代表false
+// 选中的 <input type="checkbox" checked/>
+// 未选中的 <input type="checkbox/>
+// 还需要考虑属性安全问题，不合法的属性不能够渲染，码点范围是[0x01,0x1f]和[0x7f,0x9f]
+// 在服务端渲染中，属性的key仅用于虚拟dom的diff算法，在服务端是不存在update钩子的，所以无需渲染，除此之外一些事件绑定，以及ref属性操作dom也需要渲染。
+// 基于以上问题，我们需要进一步完善代码
