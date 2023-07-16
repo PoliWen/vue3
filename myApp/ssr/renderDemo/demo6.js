@@ -245,3 +245,42 @@ function cretedRenderer(options){
     }
 }
 
+function hydrate(vnode,container){
+    hydrateNode(container.firstChild,vnode)
+}
+
+// 传入两个参数，一个是真实的dom，一个是虚拟dom节点
+function hydrateNode(node,vnode){
+    const { type } = vnode
+    vnode.el = node
+    if(typeof type === 'Object'){
+        mountComponent(vnode,container,null)
+    }else if(typeof type === 'string'){
+        if(node.nodeType !== 1){
+            console.log('mismatch')
+            console.log('服务端渲染的真实DOM节点是', node)
+            console.log('客户端渲染的虚拟DOM节点是', vnode)
+        }
+    }else{
+        hydrateElement(node,vnode)
+    }
+    return node.nextSibling
+}
+
+
+function hydrateElement(el,vnode){
+    if(vnode.props){
+        for(const key in vnode.props){
+            if(/^on/.test(key)){
+                patchProps(el,key,null,vnode.props[key])
+            }
+        }
+    }
+    if(Array.isArray(vnode.children)){
+        let nextNode = el.firstChild
+        const len = vnode.children.length
+        for(let i=0;i<len;i++){
+            nextNode = hydrateNode(nextNode,vnode.children[i])
+        }
+    }
+}
