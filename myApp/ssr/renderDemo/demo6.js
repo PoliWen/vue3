@@ -264,6 +264,7 @@ function hydrateNode(node,vnode){
     }else{
         hydrateElement(node,vnode)
     }
+    // 返回当前节点的下一个兄弟节点
     return node.nextSibling
 }
 
