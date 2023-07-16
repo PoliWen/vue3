@@ -268,7 +268,6 @@ function hydrateNode(node,vnode){
     return node.nextSibling
 }
 
-
 function hydrateElement(el,vnode){
     if(vnode.props){
         for(const key in vnode.props){

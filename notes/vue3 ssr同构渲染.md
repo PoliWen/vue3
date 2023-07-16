@@ -465,9 +465,9 @@ function renderVnode(vnode){
 - 通过hydrate方法将虚拟dom和真实dom关联起来
 - 为页面中的dom元素添加事件绑定
 
-我们知道一个虚拟节点被挂载之后，为了后续程序更新不需要重新渲染dom，需要通过该虚拟节点的vnode.el 属性存储对真实dom对象的引用，因此激活做的第一步就是将虚拟dom跟真实的dom关联起来
+我们知道一个虚拟节点被挂载之后，为了后续程序更新不需要重新渲染dom，需要通过该虚拟节点的vnode.el 属性存储对真实dom对象的引用，因此激活做的第一步就是将虚拟dom跟真实的dom关联起来。
 
- 在服务端渲染过程中，我们已经忽略了事件的绑定，和一些相关的props，因此在激活的过程中，还需要为页面中的dom元素添加事件绑定
+在服务端渲染过程中，我们已经忽略了事件的绑定，和一些相关的props，因此在激活的过程中，还需要为页面中的dom元素添加事件绑定
 
 当客户端渲染时使用如下函数进行渲染
 
@@ -493,15 +493,79 @@ container.innerHTML = html
 render.hydrate(CompVnode,container)
 ```
 
+在渲染器那一章节，已经讲过了，组件挂载的时候会将组件vnode与真实的dom建立联系，以便在更新的时候不需要重新渲染dom，以及在卸载的时候把dom上的事件进行移除掉。
 
+```javascript
+function mountElement(vnode,container){
+    vnode.el = createElement(vnode.type)
+}
+```
 
+````javascript
+function unmount(vnode){
+    const parent = vnode.el.parentNode
+    if(parent){
+       parent.removeChild(vnode.el)
+    }
+    // 这里需要使用真实的dom的 removeChild方法进行卸载，而不能直接使用parent.innerHTML = ''
+}
+````
 
+所以hydrate的第一步也是将组件的的虚拟dom和服务器返回的真实dom进行一一的关联
 
+![image-20230717003213485](C:\Users\kingw\AppData\Roaming\Typora\typora-user-images\image-20230717003213485.png)
 
+激活的原理就是递归的在真实DOM与虚拟DOM之间建立联系，从挂载容器的第一个子节点开始处理
 
+```javascript
+function hydrate(vnode,container){
+    hydrateNode(container.firstChild,vnode)
+}
+```
 
+```javascript
+// 传入两个参数，一个是真实的dom，一个是虚拟dom节点
+function hydrateNode(node,vnode){
+    const { type } = vnode
+    vnode.el = node
+    if(typeof type === 'Object'){
+        mountComponent(vnode,container,null)
+    }else if(typeof type === 'string'){
+        if(node.nodeType !== 1){
+            console.log('mismatch')
+            console.log('服务端渲染的真实DOM节点是', node)
+            console.log('客户端渲染的虚拟DOM节点是', vnode)
+        }
+    }else{
+        hydrateElement(node,vnode)
+    }
+    // 返回当前节点的下一个兄弟节点
+    return node.nextSibling
+}
+```
 
+```javascript
+function hydrateElement(el,vnode){
+    if(vnode.props){
+        for(const key in vnode.props){
+            if(/^on/.test(key)){
+                patchProps(el,key,null,vnode.props[key])
+            }
+        }
+    }
+    // 递归激活子加点
+    if(Array.isArray(vnode.children)){
+        let nextNode = el.firstChild
+        const len = vnode.children.length
+        for(let i=0;i<len;i++){
+            // 通过递归调用，将所有的子节点都进行激活
+            nextNode = hydrateNode(nextNode,vnode.children[i])
+        }
+    }
+}
+```
 
+patchProps在渲染器那一章节已经讲过了
 
 #### 服务端renderToString源码实现漫游
 
