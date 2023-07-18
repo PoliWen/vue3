@@ -571,5 +571,40 @@ patchProps在渲染器那一章节已经讲过了
 
 ### 源码createSSRApp()源码
 
+
+
  #### 编写同构代码应该注意什么
 
+
+
+
+
+客户端createSSRApp()是怎么实现的
+
+关于服务端渲染的文章
+
+参照文章
+
+https://juejin.cn/post/7176866248934817849
+
+
+
+https://blog.sww.moe/post/vue3-ssr-tutorial/
+
+
+
+https://blog.logrocket.com/adding-ssr-existing-vue-3-app/
+
+
+
+https://blog.csdn.net/baidu_20144723/article/details/125656085
+
+
+
+https://blog.csdn.net/baidu_20144723/article/details/125656085
+
+
+
+### 这篇文章也是very good
+
+https://zhuanlan.zhihu.com/p/76967335
