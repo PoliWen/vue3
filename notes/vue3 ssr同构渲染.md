@@ -452,83 +452,105 @@ function renderVnode(vnode){
 
 服务端只是当前应用的一个快照，不存在数据更新重新渲染的情况，因此数据无需是响应式的，服务端无需渲染真实的dom，因此render effect完成渲染这一步也不需要，也就意味着在客户端渲染的那一套生命周期钩子函数，服务端只执行到created为止。
 
-完整的实现代码如下，这里需要继续学习12章才能完成完整的代码
+组件渲染的代码如下，这里跟12章客户端组件渲染的代码差不多，只是少了设置render effect那一步，以及服务端渲染的date不需要使用reactive进行包裹，props的数据也不需要是响应式的。
 
 ```javascript
-function render ComponentVNode(vnode) {
-    const isFunctional = typeof vode. type === 'function'
-    let componentOptions = vode. type
-    if (isFunctional) {
-        componentOptions = {
-        	render: vnode. type, props: vnode. type.prop
-    	}
-    Let i render, data, setup, beforecreate, created, props: propsoption 1 = componentoptions
-beforeCreate && beforeCreate)
-！！元须使用reactive(）创建data的响应式版本
-const state = data ? data() : null
-const props, attrs] = resolveProps (propsOption, vode. props)
-79776.
-const slots = node. children I L
-const instance = {
-state,
-props, / props tit shallowReactive isMounted: false, subtree: null, slots, mounted: LJ.
-keepAliveCtx: null
-4
-function emit(event,
-• • •payload) {
-const eventName = onStevent[0].toUpperCase() + event.slice (1) ]'
-const handler = instance. props [eventName ]
-if (handler) {
-handler (..payload)
-§ else t
-console.error("事件不存在”）
-누
-setup
-let setupState = null
-if (setup) i
-const setupContext = 1 attrs, emit, slots 3
-const prevInstance = seCurrentInstance (instance)
-const setupResult = setup (shallowReadonly (instance.props), setupContext)
-setCurrentInstance(prevInstance)
-if (typeof setupResult === 'function') {
-if (render) console.error('setup 函数返回盒染函数，render 选项将被忽略）
-render = setupResult
-s else t
-setupState = setupContext
-4
-4
-vode. component = instance
-const renderContext = new Proxy (instance, 1
-get(t, K, r) 1
-const { state, props, slots ] = t
-if (k === 'Sslots') return slots
-if (state && k in state) {
-return state[k]
-} else if (k in props) {
-    
-    
+const myComponent = {
+    props:{
+        name:'hello'
+    },
+    setup(){
+        return ()=>{
+            return {
+                type:'div',
+                children:'hello'
+            }
+        }
     }
-    return props [k]
-} else if (setupState && k in setupState) {
-return setupState[k]
-§ else {
-console.error (不存在'）
+}
+const VNode = {
+    type: myComponent
+}
 
-set (t, K, V, r) 1 const { state, props § = t
-if (state && k in state) {
-state K= v
-} else if (k in props) {
-props_k] = v
-} else if (setupState && k in setupState) {
-setupState k] = V
-§ else r
-console.error(不存在）
-^
-§)
-created && created. call (render Context)
-const subTree = render. call(renderContext, renderContext)
-return renderVNode(subTree)
-《这上通的代码可以人发现该领现
+function renderComponentVNode(vnode) {
+    const isFunction = typeof vnode.type === 'function'
+    let componentOptions = vnode.type
+    if (isFunction) {
+        componentOptions = {
+        	render: vnode.type, 
+            props: vnode.type.props
+    	}
+    }
+    let { render, data, setup, beforeCreate, created, props: propsOption } = componentOptions
+    beforeCreate && beforeCreate()
+    
+    // 无需使用reactive(）创建data的响应式版本
+    const state = data ? data() : null
+    const [ props, attrs ] = resolveProps(propsOption, vnode.props)
+    const slots = vnode.children || {}
+    const instance = {
+        state,
+        props, // props 无需 shallowReactive 
+        isMounted: false, 
+        subtree: null,
+        slots, 
+        mounted: [],
+        keepAliveCtx: null
+    }
+    function emit(event,...payload) {
+        const eventName = `on${event[0].toUpperCase() + event.slice(1)}`
+        const handler = instance.props[eventName]
+        if (handler) {
+            handler (...payload)
+        }else{
+            console.error("事件不存在")
+        }
+    }
+    // setup
+    let setupState = null
+    if (setup){
+        const setupContext = {attrs, emit, slots }
+        const prevInstance = seCurrentInstance (instance)
+        const setupResult = setup(shallowReadonly(instance.props), setupContext)
+        setCurrentInstance(prevInstance)
+        if (typeof setupResult === 'function') {
+            if (render) console.error('setup 函数返回盒染函数，render 选项将被忽略')
+            render = setupResult
+        }else{
+            setupState = setupContext
+        }
+    }
+    vnode.component = instance
+    const renderContext = new Proxy (instance, {
+        get(t, k, r){
+            const { state, props, slots } = t
+            if(k === '$slots') return slots
+            if (state && k in state) {
+                return state[k]
+            } else if (k in props) {
+                return props [k]
+            } else if (setupState && k in setupState) {
+                return setupState[k]
+            }else {
+                console.error ('不存在')
+            }
+        },
+        set(t, K, V, r) {
+            const { state, props } = t
+            if (state && k in state) {
+                state[K]= v
+            } else if (k in props) {
+                props[k] = v
+            } else if (setupState && k in setupState) {
+                setupState[k] = V
+            }else{
+                console.error('不存在')
+            }
+        }
+    })
+    created && created.call(renderContext)
+    const subTree = render.call(renderContext,renderContext)
+    return renderVNode(subTree)
 }
 ```
 
@@ -639,7 +661,35 @@ function hydrateElement(el,vnode){
 }
 ```
 
-patchProps在渲染器那一章节已经讲过了
+对于mountComponent，由于服务端渲染的页面已经存在真实的dom了，所以当调用mountComponent函数进行组件的挂载时，无需再次创建真实DOM元素。
+
+```javascript
+function mountComponent(vnode,container,anchor){
+    instance.update = effect(()=>{
+        const subTree = render.call(renderContext,renderContext)
+        if(!instance.isMounted){
+                beforeMount && beforeMount.call(renderContext)
+                // 如果vnode.el存在，这意味着要执行激活
+                if(vnode.el){
+                    hydrateNode(vnode.el,subTree)
+                }else{
+                    patch(null,subTree,container,anchor)
+                }
+                instance.isMounted = true
+                mounted && mounted.call(renderContext)
+                instance.mounted && instance.mounted.forEach(hook=>hook.call(renderContext))
+            }else{
+                beforeUpdate && beforeUpdate.call(renderContext)
+                patch(instance.subTree,subTree,container,anchor)
+                update && update.call(renderContext)
+            }
+            instance.subTree = subTree
+        },{
+            scheduler:queueJob
+        }
+    )
+}
+```
 
 #### 服务端renderToString源码简单讲解
 

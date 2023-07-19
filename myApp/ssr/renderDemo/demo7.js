@@ -146,6 +146,10 @@ const Element = {
 
 // console.log(renderElementVnode(Element))
 
+// 组件渲染的步骤，组件的渲染函数用来描述组件的渲染内容，
+// 它的返回值是虚拟dom，我们执行组件的渲染函数得到虚拟dom，
+// 然后将该虚拟dom渲染为真实的dom
+
 const myComponent = {
     setup(){
         return () => {
@@ -156,17 +160,123 @@ const myComponent = {
         }
     }
 }
-const CompVnode = {
-    type: myComponent
-}
 
+// 1. subTree render函数可以是任意类型的虚拟节点，
+
+// 例如
+// 普通标签
+// const vNode = {
+//     type:'div'
+// }
+// // 组件
+// const vNode = {
+//     type: myComponent
+// }
+// // 片段
+// const vNode = {
+//     type:Fragement
+// }
+// // 文本节点
+// const vNode = {
+//     type:Text
+// }
+
+// 2. 执行setUp函数时，应该提供setupContext对象，执行渲染函数时候应该将this指向setupContext对象，还需要初始化data，得到setup的执行结果，并且检查setup函数的返回值是函数还是setupSate，和第十二章组件的渲染流程基本一致
+
+// 通过封装一个renderVnode方法来解决
+function renderVnode(vnode){
+    const type = typeof vnode.type
+    if(type === 'string'){
+        // 普通标签
+        return renderElementVnode(vnode)
+    }else if(type==='object' || type === 'function'){
+        // 组件
+        return renderComponentVnode(vnode)
+    }else if(type === Text){
+        // 文本节点
+        
+    }else if(type === Fragement){
+        // 片段
+    }
+}
 
 function renderComponentVnode(vnode){
     let { type: { setup } } = vnode
     const render = setup()
     const subTree = render()
-    return renderElementVnode(subTree)
+    return renderVnode(subTree)
 }
 
+const CompVnode = {
+    type: myComponent
+}
+// 客户端激活的原理
+// 对于同构应用，组件会在客户端和服务端分别执行一次，
+// 浏览器渲染了由服务端发送过来的html之后，页面中已经存在html了，当组件代码在客户端运行时，不会在重新创建dom，而是做了以下两件事情
+// 1. 通过hydrate方法将虚拟dom和真实dom关联起来
+// 2. 为页面中的dom元素添加事件绑定
+// 我们知道一个虚拟节点被挂载之后，为了后续程序更新不需要重新渲染dom，
+// 需要通过该虚拟节点的vnode.el属性存储对真实dom对象的引用，因此激活做的第一步就是将虚拟dom跟真实的dom进行相关联
+// 在服务端渲染过程中，我们已经忽略了事件的绑定，和一些相关的props，因此在激活的过程中，还需要为页面中的dom元素添加事件绑定
+
+// render.render(vnode,container)
+// 对于同构应用使用
+// // render.hydrate(vnode,container) 来进行激活
+
+// 可以用代码简单模拟一下渲染过程
 const html = renderComponentVnode(CompVnode)
-console.log(html) // 输出: <div>hello</div>
+const container = document.querySelector('#app')
+container.innerHTML = html
+
+// 激活
+render.hydrate(CompVnode,container)
+
+function cretedRenderer(options){
+    function hydrate(node,vnode){
+        // ...
+    }
+    return {
+        render,
+        hydrate
+    }
+}
+
+function hydrate(vnode,container){
+    hydrateNode(container.firstChild,vnode)
+}
+
+// 传入两个参数，一个是真实的dom，一个是虚拟dom节点
+function hydrateNode(node,vnode){
+    const { type } = vnode
+    vnode.el = node
+    if(typeof type === 'Object'){
+        mountComponent(vnode,container,null)
+    }else if(typeof type === 'string'){
+        if(node.nodeType !== 1){
+            console.log('mismatch')
+            console.log('服务端渲染的真实DOM节点是', node)
+            console.log('客户端渲染的虚拟DOM节点是', vnode)
+        }
+    }else{
+        hydrateElement(node,vnode)
+    }
+    // 返回当前节点的下一个兄弟节点
+    return node.nextSibling
+}
+
+function hydrateElement(el,vnode){
+    if(vnode.props){
+        for(const key in vnode.props){
+            if(/^on/.test(key)){
+                patchProps(el,key,null,vnode.props[key])
+            }
+        }
+    }
+    if(Array.isArray(vnode.children)){
+        let nextNode = el.firstChild
+        const len = vnode.children.length
+        for(let i=0;i<len;i++){
+            nextNode = hydrateNode(nextNode,vnode.children[i])
+        }
+    }
+}
