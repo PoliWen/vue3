@@ -4,9 +4,9 @@ import fs from 'fs';
 const server = express();
 
 server.get('/', async (req, res) => {
-  const appHTML = await render();
-  const template = fs.readFileSync('./index.html', 'utf-8');
-  res.send(template.replace('<!--ssr-outlet-->', appHTML));
+    const appHTML = await render();
+    const template = fs.readFileSync('./index.html', 'utf-8');
+    res.send(template.replace('<!--ssr-outlet-->', appHTML));
   }
 );
 

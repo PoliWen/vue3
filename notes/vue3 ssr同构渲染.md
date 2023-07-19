@@ -74,7 +74,7 @@
 
 页面的数据不需要经常变化，纯静态的页面，可以使用SSG技术，通常一些文档型网站，博客类型的，像VitePress就是一个使用vue驱动的静态站点生成器
 
-### 服务端渲染的最基本实现
+### 同构渲染的最基本实现
 
 一个同构应用基本的目录结构应包含以下几个文件
 
@@ -388,7 +388,7 @@ const myComponent = {
         }
     }
 }
-const CompVnode = {
+const Vnode = {
     type: myComponent
 }
 ```
@@ -455,7 +455,81 @@ function renderVnode(vnode){
 完整的实现代码如下，这里需要继续学习12章才能完成完整的代码
 
 ```javascript
+function render ComponentVNode(vnode) {
+    const isFunctional = typeof vode. type === 'function'
+    let componentOptions = vode. type
+    if (isFunctional) {
+        componentOptions = {
+        	render: vnode. type, props: vnode. type.prop
+    	}
+    Let i render, data, setup, beforecreate, created, props: propsoption 1 = componentoptions
+beforeCreate && beforeCreate)
+！！元须使用reactive(）创建data的响应式版本
+const state = data ? data() : null
+const props, attrs] = resolveProps (propsOption, vode. props)
+79776.
+const slots = node. children I L
+const instance = {
+state,
+props, / props tit shallowReactive isMounted: false, subtree: null, slots, mounted: LJ.
+keepAliveCtx: null
+4
+function emit(event,
+• • •payload) {
+const eventName = onStevent[0].toUpperCase() + event.slice (1) ]'
+const handler = instance. props [eventName ]
+if (handler) {
+handler (..payload)
+§ else t
+console.error("事件不存在”）
+누
+setup
+let setupState = null
+if (setup) i
+const setupContext = 1 attrs, emit, slots 3
+const prevInstance = seCurrentInstance (instance)
+const setupResult = setup (shallowReadonly (instance.props), setupContext)
+setCurrentInstance(prevInstance)
+if (typeof setupResult === 'function') {
+if (render) console.error('setup 函数返回盒染函数，render 选项将被忽略）
+render = setupResult
+s else t
+setupState = setupContext
+4
+4
+vode. component = instance
+const renderContext = new Proxy (instance, 1
+get(t, K, r) 1
+const { state, props, slots ] = t
+if (k === 'Sslots') return slots
+if (state && k in state) {
+return state[k]
+} else if (k in props) {
+    
+    
+    }
+    return props [k]
+} else if (setupState && k in setupState) {
+return setupState[k]
+§ else {
+console.error (不存在'）
 
+set (t, K, V, r) 1 const { state, props § = t
+if (state && k in state) {
+state K= v
+} else if (k in props) {
+props_k] = v
+} else if (setupState && k in setupState) {
+setupState k] = V
+§ else r
+console.error(不存在）
+^
+§)
+created && created. call (render Context)
+const subTree = render. call(renderContext, renderContext)
+return renderVNode(subTree)
+《这上通的代码可以人发现该领现
+}
 ```
 
 #### 客户端激活的原理
@@ -567,9 +641,8 @@ function hydrateElement(el,vnode){
 
 patchProps在渲染器那一章节已经讲过了
 
-#### 服务端renderToString源码
+#### 服务端renderToString源码简单讲解
 
-### 源码createSSRApp()源码
+### createSSRApp()源码简单讲解
 
- #### 编写同构代码应该注意什么
-
+ #### 编写同构代码应该注意什么简单说明
