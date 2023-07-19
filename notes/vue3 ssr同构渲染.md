@@ -554,6 +554,22 @@ function renderComponentVNode(vnode) {
 }
 ```
 
+客户端渲染需要用effect函数包裹渲染函数，当组件状态发生变化的时候，实现组件的更新。
+
+```javascript
+// 客户端端渲染组件
+function mountComponent(vnode,contianer,anchor){
+    const componentOptions = vnode.type
+    const { render, data } = componentOptions
+    const state = reactive(data())
+    effect(()=>{
+        const subTree = render.call(state)
+        // 执行挂载操作
+        patch(null,subTree,container,anchor)
+    })
+}
+```
+
 #### 客户端激活的原理
 
 对于同构应用，组件代码会在服务端和客户端分别执行一次，浏览器渲染了由服务端发送过来的html之后，页面中已经存在html了，当组件代码在客户端运行时，不会在重新创建dom，而是做了以下两件事情
