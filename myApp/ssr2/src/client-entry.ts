@@ -6,7 +6,4 @@ if (window.__pinia__) {
     pinia.state.value = window.__pinia__
 }
 
-router.isReady().then(() => {
-    app.mount('#app')
-    console.log("hydrated");
-})
+app.mount('#app')
