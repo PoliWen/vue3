@@ -1,7 +1,7 @@
 <template>
   <div>
     <Nav/>
-    <h2> 首页：Vue3 + Vite + VueRouter</h2>
+    <h2> 首页：Vue3 + Vite + VueRouter + pinia 实现同构功能。 </h2>
     <button @click="increment">{{ count }}</button>
   </div>
 </template>

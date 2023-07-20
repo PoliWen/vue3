@@ -12,6 +12,6 @@ export async function render(url:string) {
   return {
     html, 
     __data__: JSON.stringify(app?.__data__), 
-    __state__:  JSON.stringify(pinia.state.value)
+    __pinia__:  JSON.stringify(pinia.state.value)
   }
 }
