@@ -7,7 +7,6 @@ export const useCountStore = defineStore("count", () => {
     count.value++
   };
 
-  // 简单模拟服务端数据拉取逻辑
   if (import.meta.env.SSR) {
     count.value = 3; // 服务端渲染时 count 的初始值为 3
   }
