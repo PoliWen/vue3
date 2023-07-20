@@ -23,6 +23,7 @@ export const useFetch = async (requestInfo:RequestInfo, options?:FetchOptions) =
     
     return ssrData
   }
+
   const data = await ofetch(requestInfo, options)
   
   // 如果是服务端渲染将接口返回的数据缓存到app.__data__中
