@@ -1,3 +1,3 @@
 import { createApp } from './app.js'
 
-createApp().mount('#app')
+createApp().mount('#app')  // hydrate

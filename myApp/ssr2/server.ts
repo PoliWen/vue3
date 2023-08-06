@@ -47,7 +47,7 @@ async function createServer() {
       const { render } = await vite.ssrLoadModule('/src/server-entry.ts')
   
       // 4. 渲染应用的 HTML。这假设 entry-server.js 导出的 `render` 函数调用了适当的 SSR 框架 API。
-      const { html: appHtml, __data__,__state__ } = await render(url)
+      const { html: appHtml, __data__, __state__ } = await render(url)
   
       // 替换注释为准备好的html + 数据脱水
       const html = template.replace(`<!--ssr-outlet-->`, `${appHtml} <script>window.__MY_CACHE__=${__data__};window.__initState__=${__state__}</script>`)
