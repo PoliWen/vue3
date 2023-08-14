@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import Nav from '../../components/nav.vue'
-import { useFetch } from '../../utils/useFetch'
+import { useFetch } from '../../composables/useFetch'
 import { useRouter } from 'vue-router';
 interface ArticleItem{
   userId: number;
@@ -23,7 +23,7 @@ interface ArticleItem{
 const router = useRouter()
 const articleList = ref<ArticleItem[]>()
 async function getArticleList(){
-  const  data =  await useFetch('http://localhost:3000/api/article-list')
+  const  data =  await useFetch('http://jsonplaceholder.typicode.com/posts')
   articleList.value = data
 }
 
